@@ -3,922 +3,122 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Exo+2:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap');
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --bg:#080a0f;--bg2:#0c0f18;--bg3:#111520;--bg4:#161c2c;
-  --border:rgba(168,124,255,0.12);--border2:rgba(168,124,255,0.28);
-  --accent:#a87cff;--accent2:#8b5cf6;--accent3:#c4b0ff;
-  --gold:#f0c040;--gold2:#ffd966;--goldbg:rgba(240,192,64,0.12);
-  --red:#ff6b6b;--redbg:rgba(255,107,107,0.12);
-  --green:#4ade80;--greenbg:rgba(74,222,128,0.12);
-  --blue:#60a5fa;--bluebg:rgba(96,165,250,0.12);
-  --orange:#fb923c;--orangebg:rgba(251,146,60,0.12);
-  --text:#e8e4f0;--text2:#a89cc0;--text3:#5a5470;
-  --fh:'Cinzel',serif;--fb:'Exo 2',sans-serif;--fm:'Share Tech Mono',monospace;
-}
-body{background:var(--bg);color:var(--text);font-family:var(--fb);font-size:14px;line-height:1.5;min-height:100vh}
-
-.hdr{background:var(--bg2);border-bottom:1px solid var(--border2);padding:0 14px;display:flex;align-items:center;justify-content:space-between;height:54px;position:sticky;top:0;z-index:100}
-.hdr::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:.35}
-.brand{display:flex;align-items:center;gap:10px}
-.badge-num{background:var(--gold);color:#1a0f00;font-family:var(--fh);font-size:14px;font-weight:900;padding:2px 9px;letter-spacing:1px;white-space:nowrap}
-.brand-col{display:flex;flex-direction:column;gap:1px}
-.brand-name{font-family:var(--fh);font-size:14px;font-weight:700;color:var(--gold2);letter-spacing:1.5px;line-height:1.1}
-.brand-sub{font-family:var(--fm);font-size:9px;color:var(--text3);letter-spacing:1.5px}
-.hdr-right{display:flex;align-items:center;gap:8px}
-.admin-pill{font-family:var(--fm);font-size:9px;padding:3px 8px;border:1px solid;letter-spacing:1px}
-.admin-pill.locked{color:var(--text3);border-color:var(--text3)}
-.admin-pill.unlocked{color:var(--gold);border-color:var(--gold);background:var(--goldbg)}
-.hdr-btn{font-family:var(--fh);font-size:10px;font-weight:600;letter-spacing:1px;padding:4px 11px;border:1px solid var(--border2);background:transparent;color:var(--text2);cursor:pointer;transition:all .2s}
-.hdr-btn:hover{border-color:var(--accent);color:var(--accent)}
-.sync-row{display:flex;align-items:center;gap:5px}
-.sync-dot{width:7px;height:7px;border-radius:50%;background:var(--text3);flex-shrink:0;transition:background .4s}
-.sync-dot.ok{background:var(--green)}.sync-dot.auth{background:var(--gold)}.sync-dot.err{background:var(--red)}
-.sync-label{font-family:var(--fm);font-size:9px;color:var(--text3);letter-spacing:1px}
-
-.nav{background:var(--bg2);border-bottom:1px solid var(--border);display:flex;overflow-x:auto;scrollbar-width:none}
-.nav::-webkit-scrollbar{display:none}
-.nav-tab{font-family:var(--fh);font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;padding:10px 14px;border:none;background:transparent;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;flex-shrink:0;transition:all .2s}
-.nav-tab:hover{color:var(--text2)}
-.nav-tab.active{color:var(--accent3);border-bottom-color:var(--accent)}
-.nav-tab.glocked{color:var(--text3)}.nav-tab.gunlocked{color:var(--gold)}
-
-.page{display:none;padding:16px;min-height:calc(100vh - 90px)}
-.page.active{display:block}
-
-.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:200;align-items:center;justify-content:center;padding:16px}
-.modal{background:var(--bg2);border:1px solid var(--border2);border-top:2px solid var(--gold);padding:28px 24px;width:100%;max-width:320px;text-align:center}
-.modal-title{font-family:var(--fh);font-size:15px;color:var(--gold2);letter-spacing:2px;margin-bottom:4px}
-.modal-sub{font-family:var(--fm);font-size:10px;color:var(--text3);letter-spacing:1.5px;margin-bottom:18px}
-.pin-input{background:var(--bg3);border:1px solid var(--border2);color:var(--text);font-family:var(--fm);font-size:22px;text-align:center;letter-spacing:6px;padding:10px;width:100%;outline:none;margin-bottom:4px}
-.pin-input:focus{border-color:var(--accent)}
-.pin-err{color:var(--red);font-family:var(--fm);font-size:11px;height:16px;margin:5px 0}
-.modal-row{display:flex;gap:8px;margin-top:8px}
-.btn-gold{flex:1;background:var(--gold);border:none;color:#1a0f00;font-family:var(--fh);font-size:12px;font-weight:700;letter-spacing:1.5px;padding:10px;cursor:pointer}
-.btn-gold:hover{background:var(--gold2)}
-.btn-ghost{flex:1;background:transparent;border:1px solid var(--border2);color:var(--text2);font-family:var(--fh);font-size:11px;padding:10px;cursor:pointer}
-
-.fb-modal{background:var(--bg2);border:1px solid var(--border2);border-top:2px solid var(--accent2);padding:24px;width:100%;max-width:440px;text-align:left}
-.fb-modal-title{font-family:var(--fh);font-size:14px;color:var(--accent3);letter-spacing:2px;margin-bottom:12px}
-.fb-field{margin-bottom:10px}
-.fb-label{font-family:var(--fm);font-size:10px;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px}
-.fb-input{width:100%;background:var(--bg3);border:1px solid var(--border);color:var(--text);font-family:var(--fm);font-size:11px;padding:7px 10px;outline:none}
-.fb-input:focus{border-color:var(--accent2)}
-.fb-note{font-size:11px;color:var(--text3);margin-top:10px;line-height:1.7}
-.fb-note a{color:var(--accent3)}
-.fb-note code{background:var(--bg3);padding:1px 5px;font-size:10px;color:var(--accent3)}
-
-.sh{display:flex;align-items:flex-start;gap:10px;margin-bottom:18px}
-.sh-bar{width:3px;flex-shrink:0;align-self:stretch;min-height:32px}
-.sh-title{font-family:var(--fh);font-size:17px;font-weight:700;letter-spacing:2px;text-transform:uppercase}
-.sh-sub{font-family:var(--fm);font-size:9px;color:var(--text3);letter-spacing:1.5px;margin-top:2px}
-
-.fg{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
-.fl{display:flex;flex-direction:column;gap:5px}
-.fl.span2{grid-column:1/-1}
-.flabel{font-family:var(--fm);font-size:9px;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase}
-.finput,.fselect,.ftextarea{background:var(--bg3);border:1px solid var(--border);color:var(--text);font-family:var(--fb);font-size:13px;padding:9px 11px;outline:none;width:100%;transition:border-color .2s}
-.finput:focus,.fselect:focus,.ftextarea:focus{border-color:var(--accent2)}
-.fselect option{background:var(--bg3)}
-.ftextarea{resize:vertical;min-height:65px}
-
-.ev-banner{display:flex;align-items:center;gap:10px;background:var(--bg3);border:1px solid var(--border2);border-left:3px solid var(--gold);padding:8px 14px;margin-bottom:16px;flex-wrap:wrap}
-.ev-label{font-family:var(--fm);font-size:9px;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;flex-shrink:0}
-.ev-val{font-family:var(--fm);font-size:13px;color:var(--gold2);letter-spacing:1px}
-.ev-none{font-family:var(--fm);font-size:11px;color:var(--red)}
-
-.auth-banner{display:flex;align-items:center;gap:8px;background:var(--bg3);border:1px solid var(--border);padding:7px 12px;margin-bottom:14px;font-family:var(--fm);font-size:10px;color:var(--text3);letter-spacing:1px}
-.auth-banner.authed{border-color:rgba(74,222,128,.3);color:var(--green)}
-.auth-banner.pending{border-color:rgba(240,192,64,.3);color:var(--gold2)}
-.auth-banner.failed{border-color:rgba(255,107,107,.3);color:var(--red)}
-
-.rating-block{background:var(--bg3);border:1px solid var(--border);border-left:3px solid var(--accent2);padding:14px;margin-bottom:16px}
-.rb-title{font-family:var(--fh);font-size:11px;color:var(--accent3);margin-bottom:12px;letter-spacing:2px;text-transform:uppercase}
-.rrow{display:flex;align-items:center;gap:10px;margin-bottom:8px}
-.rlabel{font-family:var(--fm);font-size:10px;color:var(--text3);width:120px;flex-shrink:0;letter-spacing:1px;text-transform:uppercase}
-.rslider{flex:1;accent-color:var(--accent2);cursor:pointer;min-width:0}
-.rval{font-family:var(--fm);font-size:13px;font-weight:700;color:var(--accent3);width:22px;text-align:right;flex-shrink:0}
-
-.btn-primary{background:var(--accent2);border:none;color:#fff;font-family:var(--fh);font-size:13px;font-weight:700;letter-spacing:1.5px;padding:11px 28px;cursor:pointer;transition:background .2s;width:100%}
-.btn-primary:hover{background:var(--accent)}
-.btn-primary:disabled{background:var(--text3);cursor:not-allowed;opacity:.5}
-.btn-outline{background:transparent;border:1px solid var(--border2);color:var(--text2);font-family:var(--fh);font-size:11px;font-weight:600;letter-spacing:1px;padding:7px 14px;cursor:pointer;transition:all .2s}
-.btn-outline:hover{border-color:var(--accent);color:var(--accent)}
-.btn-danger{background:var(--redbg);border:1px solid rgba(255,107,107,.4);color:var(--red);font-family:var(--fh);font-size:11px;letter-spacing:1px;padding:7px 14px;cursor:pointer}
-.btn-sm-icon{background:transparent;border:1px solid rgba(255,107,107,.3);color:var(--red);font-family:var(--fm);font-size:10px;padding:2px 7px;cursor:pointer}
-
-.success-banner{background:var(--greenbg);border:1px solid rgba(74,222,128,.4);color:var(--green);font-family:var(--fm);font-size:11px;padding:8px 14px;margin-bottom:14px;letter-spacing:1px}
-.api-banner{background:var(--goldbg);border:1px solid rgba(240,192,64,.25);color:var(--gold2);font-family:var(--fm);font-size:10px;padding:8px 12px;margin-bottom:14px;letter-spacing:1px}
-.info-banner{background:var(--bluebg);border:1px solid rgba(96,165,250,.3);color:var(--blue);font-family:var(--fm);font-size:10px;padding:8px 12px;margin-bottom:14px;letter-spacing:1px}
-.fuel-banner{background:var(--orangebg);border:1px solid rgba(251,146,60,.3);color:var(--orange);font-family:var(--fm);font-size:10px;padding:8px 12px;margin-bottom:14px;letter-spacing:1px}
-
-.tba-cfg{background:var(--bg3);border:1px solid var(--border);border-left:3px solid var(--gold);padding:14px;margin-bottom:16px}
-.tba-cfg-title{font-family:var(--fh);font-size:11px;color:var(--gold2);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px}
-.tba-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
-.tba-actions{display:flex;gap:8px;flex-wrap:wrap}
-.tba-status{font-family:var(--fm);font-size:10px;color:var(--text3);margin-top:8px;letter-spacing:1px}
-.tba-help{font-size:11px;color:var(--text3);margin-top:7px;line-height:1.7}
-.tba-help a{color:var(--accent3)}
-
-.tabs{display:flex;border-bottom:1px solid var(--border2);margin-bottom:14px;overflow-x:auto;scrollbar-width:none}
-.tabs::-webkit-scrollbar{display:none}
-.tab-btn{font-family:var(--fh);font-size:10px;font-weight:600;letter-spacing:1.5px;padding:8px 14px;border:none;background:transparent;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap;flex-shrink:0}
-.tab-btn.active{color:var(--accent3);border-bottom-color:var(--accent)}
-
-.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
-.tbl{width:100%;border-collapse:collapse;font-size:11px;min-width:700px}
-.tbl th{background:var(--bg3);font-family:var(--fm);font-size:9px;letter-spacing:1.5px;color:var(--accent3);text-transform:uppercase;padding:8px 9px;text-align:left;border-bottom:1px solid var(--border2);white-space:nowrap;cursor:pointer;user-select:none}
-.tbl th:hover{color:var(--gold2)}
-.tbl th.fuel-col{color:var(--orange)}
-.tbl td{padding:7px 9px;border-bottom:1px solid var(--border);font-family:var(--fm);font-size:11px;color:var(--text2);white-space:nowrap}
-.tbl tr:hover td{background:rgba(168,124,255,.04)}
-.badge{font-family:var(--fm);font-size:10px;padding:2px 7px;letter-spacing:1px}
-.bp{background:rgba(168,124,255,.15);color:var(--accent3)}
-.bg2{background:var(--goldbg);color:var(--gold2)}
-.bgr{background:var(--greenbg);color:var(--green)}
-.br{background:var(--redbg);color:var(--red)}
-.bb{background:var(--bluebg);color:var(--blue)}
-.bo{background:var(--orangebg);color:var(--orange)}
-.tbl-ctrl{display:flex;gap:8px;align-items:center;margin-bottom:12px;flex-wrap:wrap}
-.empty{text-align:center;padding:32px;color:var(--text3);font-family:var(--fm);font-size:11px;letter-spacing:1px}
-
-.strat-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.scard{background:var(--bg3);border:1px solid var(--border);border-top:2px solid var(--accent2);padding:14px}
-.scard.gold-t{border-top-color:var(--gold)}.scard.full{grid-column:1/-1}
-.scard-title{font-family:var(--fh);font-size:12px;font-weight:700;color:var(--accent3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px;padding-bottom:7px;border-bottom:1px solid var(--border)}
-.scard-title.gt{color:var(--gold2)}
-.stat-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--border)}
-.stat-row:last-child{border:none}
-.stat-name{font-size:12px;color:var(--text2)}
-.stat-v{font-family:var(--fm);font-size:13px;font-weight:700;color:var(--accent3)}
-.rank-row{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--border)}
-.rank-row:last-child{border:none}
-.rank-n{font-family:var(--fm);font-size:10px;width:20px;flex-shrink:0}
-.rank-t{font-family:var(--fm);font-size:12px;color:var(--text);flex:1}
-.rank-s{font-family:var(--fm);font-size:12px;color:var(--accent3)}
-.rank-e{font-family:var(--fm);font-size:10px;color:var(--text3)}
-
-.pred-wrap{display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap;align-items:flex-end}
-.pred-al{display:flex;flex-direction:column;gap:6px}
-.pred-al-label{font-family:var(--fh);font-size:10px;letter-spacing:2px;text-transform:uppercase}
-.pred-al.red .pred-al-label{color:var(--red)}
-.pred-al.blue .pred-al-label{color:var(--blue)}
-.pred-teams-row{display:flex;gap:5px}
-.pred-tinput{width:70px;background:var(--bg4);border:1px solid var(--border);color:var(--text);font-family:var(--fm);font-size:12px;padding:6px 7px;outline:none}
-.pred-tinput:focus{border-color:var(--accent2)}
-.pred-res{background:var(--bg4);border:1px solid var(--border2);padding:14px;margin-top:4px}
-.pred-rows{display:flex;gap:6px;margin-bottom:9px;flex-wrap:wrap;align-items:center}
-.tc{font-family:var(--fm);font-size:11px;padding:3px 9px;border:1px solid}
-.tc.red{border-color:var(--red);color:var(--red);background:var(--redbg)}
-.tc.blue{border-color:var(--blue);color:var(--blue);background:var(--bluebg)}
-.pred-pcts{display:flex;justify-content:space-between;font-family:var(--fm);font-size:13px;font-weight:700;margin-bottom:5px}
-.pred-bar{height:8px;background:var(--bg);margin:6px 0;border-radius:2px;overflow:hidden;display:flex}
-.pred-bar-r{background:var(--red);transition:width .5s}
-.pred-bar-b{background:var(--blue);transition:width .5s}
-.pred-winner{font-family:var(--fh);font-size:14px;letter-spacing:1.5px}
-.pred-conf{font-family:var(--fm);font-size:10px;color:var(--text3);margin-top:4px;letter-spacing:1px}
-
-.lookup-wrap{background:var(--bg3);border:1px solid var(--border);border-left:3px solid var(--accent2);padding:14px;margin-bottom:14px}
-.lookup-row{display:flex;gap:8px;align-items:center}
-.lookup-res{background:var(--bg4);border:1px solid var(--border2);padding:14px;margin-top:10px}
-.lu-header{display:flex;align-items:center;gap:10px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--border)}
-.lu-num{font-family:var(--fh);font-size:20px;font-weight:900;color:var(--gold2)}
-.lu-meta{font-family:var(--fm);font-size:10px;color:var(--text3);letter-spacing:1px}
-.lu-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px}
-.lu-stat{background:var(--bg3);padding:8px 10px}
-.lu-stat-label{font-family:var(--fm);font-size:9px;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:3px}
-.lu-stat-val{font-family:var(--fm);font-size:14px;font-weight:700;color:var(--accent3)}
-.lu-stat.fuel .lu-stat-val{color:var(--orange)}
-.lu-match-title{font-family:var(--fm);font-size:9px;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px;margin-top:10px}
-.lu-match-row{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--border);font-family:var(--fm);font-size:11px}
-.lu-match-row:last-child{border:none}
-
-/* fuel section divider in table headers */
-.th-divider{border-left:2px solid rgba(251,146,60,.3)!important}
-
-@media(max-width:600px){
-  .strat-grid{grid-template-columns:1fr}
-  .scard.full{grid-column:1}
-  .tba-grid{grid-template-columns:1fr}
-  .fg{grid-template-columns:1fr}
-  .fl.span2{grid-column:1}
-  .pred-wrap{flex-direction:column;align-items:flex-start}
-  .lu-grid{grid-template-columns:1fr 1fr}
-  .brand-sub{display:none}
-}
-@media(max-width:400px){
-  .hdr{padding:0 10px}.page{padding:12px}
-  .badge-num{font-size:12px;padding:2px 7px}
-  .brand-name{font-size:12px}
-}
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Exo+2:wght@400;600&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#080a0f;--bg2:#0c0f18;--bg3:#111520;--border:rgba(168,124,255,0.2);--accent:#a87cff;--gold:#f0c040;--gold2:#ffd966;--green:#4ade80;--red:#ff6b6b;--orange:#fb923c;--text:#e8e4f0;--text2:#a89cc0;--text3:#5a5470;--fm:'Share Tech Mono',monospace;--fb:'Exo 2',sans-serif}
+body{background:var(--bg);color:var(--text);font-family:var(--fb);padding:20px;font-size:13px}
+h2{font-family:var(--fm);color:var(--gold2);letter-spacing:2px;margin-bottom:6px;font-size:14px}
+p{color:var(--text2);font-size:12px;margin-bottom:16px;line-height:1.6}
+.row{display:flex;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.finput{background:var(--bg3);border:1px solid var(--border);color:var(--text);font-family:var(--fm);font-size:12px;padding:8px 11px;outline:none;flex:1;min-width:200px}
+.finput:focus{border-color:var(--accent)}
+.btn{background:var(--accent);border:none;color:#fff;font-family:var(--fm);font-size:12px;letter-spacing:1px;padding:8px 18px;cursor:pointer}
+.btn:hover{background:var(--gold);color:#000}
+.status{font-family:var(--fm);font-size:11px;color:var(--text3);margin-bottom:10px;letter-spacing:1px;min-height:16px}
+.log-box{background:var(--bg2);border:1px solid var(--border);padding:14px;font-family:var(--fm);font-size:11px;color:var(--green);white-space:pre-wrap;word-break:break-all;max-height:400px;overflow-y:auto;line-height:1.6}
+.log-box.has-error{color:var(--red)}
+.copy-btn{background:transparent;border:1px solid var(--border);color:var(--text2);font-family:var(--fm);font-size:10px;padding:4px 12px;cursor:pointer;margin-top:8px;letter-spacing:1px}
+.copy-btn:hover{border-color:var(--gold);color:var(--gold)}
+.label{font-family:var(--fm);font-size:9px;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px}
 </style>
 </head>
 <body>
+<h2>🔍 TBA Score Breakdown Field Inspector</h2>
+<p>Enter your TBA API key and event key, then click Inspect. This will fetch the first match and show you the exact JSON field names TBA uses for your event — paste the output back to Claude.</p>
 
-<div class="hdr">
-  <div class="brand">
-    <span class="badge-num">3206</span>
-    <div class="brand-col">
-      <span class="brand-name">
-        <svg style="display:inline-block;width:16px;height:11px;vertical-align:middle;margin-right:5px" viewBox="0 0 22 16" fill="none" aria-hidden="true">
-          <path d="M1 14h20M1 14L4 4l5 5 2-7 2 7 5-5 3 10" stroke="#f0c040" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>
-          <circle cx="2.5" cy="3.5" r="1.5" fill="#f0c040"/>
-          <circle cx="11" cy="1.5" r="1.5" fill="#f0c040"/>
-          <circle cx="19.5" cy="3.5" r="1.5" fill="#f0c040"/>
-        </svg>Royal T-Wrecks
-      </span>
-      <span class="brand-sub">FRC · Team 3206 · Rebuilt 2026</span>
-    </div>
+<div class="row">
+  <div style="flex:2;min-width:220px">
+    <div class="label">TBA Read API Key</div>
+    <input class="finput" id="tba-key" type="text" placeholder="Paste your TBA key...">
   </div>
-  <div class="hdr-right">
-    <div class="sync-row"><div class="sync-dot" id="sync-dot"></div><span class="sync-label" id="sync-label">—</span></div>
-    <span class="admin-pill locked" id="admin-pill">SCOUTER</span>
-    <button class="hdr-btn" id="admin-btn" onclick="openAdminModal()">Login</button>
+  <div style="flex:1;min-width:140px">
+    <div class="label">Event Key</div>
+    <input class="finput" id="tba-event" placeholder="2026mnum">
+  </div>
+  <div style="display:flex;align-items:flex-end">
+    <button class="btn" onclick="inspect()">Inspect Breakdown</button>
   </div>
 </div>
 
-<div class="nav">
-  <button class="nav-tab active" onclick="gotoPage('scout',this)">Scout</button>
-  <button class="nav-tab glocked" onclick="gotoPage('database',this)">Database</button>
-  <button class="nav-tab glocked" onclick="gotoPage('strategy',this)">Strategy</button>
-</div>
+<div class="status" id="status">Waiting...</div>
+<div class="log-box" id="log">Output will appear here after clicking Inspect.</div>
+<button class="copy-btn" onclick="copyLog()">Copy Output</button>
 
-<!-- ADMIN MODAL -->
-<div class="overlay" id="admin-overlay">
-  <div class="modal">
-    <div class="modal-title">Royal Access</div>
-    <div class="modal-sub">ENTER ADMIN PIN</div>
-    <input class="pin-input" type="password" id="pin-input" maxlength="10" placeholder="••••••" onkeydown="if(event.key==='Enter')tryPin()">
-    <div class="pin-err" id="pin-err"></div>
-    <div class="modal-row">
-      <button class="btn-gold" onclick="tryPin()">Unlock</button>
-      <button class="btn-ghost" onclick="closeAdminModal()">Cancel</button>
-    </div>
-  </div>
-</div>
-
-<!-- FIREBASE CONFIG MODAL -->
-<div class="overlay" id="fb-overlay">
-  <div class="fb-modal">
-    <div class="fb-modal-title">Firebase Configuration</div>
-    <div class="info-banner">Anonymous Auth enabled — scouts get a silent token automatically. No login needed on their end.</div>
-    <div class="fb-field"><div class="fb-label">Database URL</div><input class="fb-input" id="fb-url" placeholder="https://your-project-default-rtdb.firebaseio.com"></div>
-    <div class="fb-field"><div class="fb-label">API Key</div><input class="fb-input" id="fb-apikey" placeholder="AIzaSy..."></div>
-    <div class="fb-field"><div class="fb-label">Project ID</div><input class="fb-input" id="fb-projectid" placeholder="your-project-id"></div>
-    <div class="modal-row" style="margin-top:14px">
-      <button class="btn-gold" onclick="saveFBConfig()">Save & Connect</button>
-      <button class="btn-ghost" onclick="closeFBModal()">Cancel</button>
-    </div>
-    <div class="fb-note">
-      1. <a href="https://console.firebase.google.com" target="_blank">console.firebase.google.com</a> → Realtime Database → test mode<br>
-      2. <strong style="color:var(--gold2)">Authentication → Sign-in method → Anonymous → Enable</strong><br>
-      3. Project Settings → Your apps → Add web app → copy config<br>
-      4. Paste above and save
-    </div>
-  </div>
-</div>
-
-<!-- PAGE 1: SCOUT -->
-<div class="page active" id="page-scout">
-  <div class="sh"><div class="sh-bar" style="background:var(--gold)"></div><div><div class="sh-title" style="color:var(--gold2)">Match Scouting</div><div class="sh-sub">// Subjective data entry — all scouts</div></div></div>
-  <div id="scout-ok" class="success-banner" style="display:none">✓ Entry submitted — synced to shared database</div>
-  <div class="auth-banner pending" id="auth-banner"><span id="auth-banner-text">Connecting to database...</span></div>
-  <div class="ev-banner">
-    <span class="ev-label">Active Event:</span>
-    <span id="scout-ev-display" class="ev-none">Not set — admin configures in Database</span>
-  </div>
-  <div class="fg">
-    <div class="fl"><label class="flabel">Match #</label><input class="finput" id="f-match" type="number" min="1" placeholder="1"></div>
-    <div class="fl"><label class="flabel">Team #</label><input class="finput" id="f-team" type="number" placeholder="3206"></div>
-    <div class="fl"><label class="flabel">Scout Name</label><input class="finput" id="f-scout" placeholder="Your name"></div>
-    <div class="fl"><label class="flabel">Alliance</label><select class="fselect" id="f-alliance"><option value="Red">Red Alliance</option><option value="Blue">Blue Alliance</option></select></div>
-    <div class="fl"><label class="flabel">Start Position</label><select class="fselect" id="f-startpos"><option>Center</option><option>Left</option><option>Right</option><option>Unknown</option></select></div>
-    <div class="fl"><label class="flabel">Auto Strategy</label><select class="fselect" id="f-auto"><option>Full auto routine</option><option>Partial auto</option><option>Mobility only</option><option>Stayed in place</option><option>No auto</option></select></div>
-    <div class="fl"><label class="flabel">Endgame</label><select class="fselect" id="f-endgame"><option>Climbed (High)</option><option>Climbed (Low)</option><option>Parked</option><option>Attempted climb</option><option>No endgame</option></select></div>
-    <div class="fl"><label class="flabel">Fouls</label><input class="finput" id="f-fouls" type="number" min="0" value="0"></div>
-    <div class="fl"><label class="flabel">Defense</label><select class="fselect" id="f-defense"><option value="None">None</option><option value="Light">Light</option><option value="Heavy">Heavy</option></select></div>
-    <div class="fl span2"><label class="flabel">Notes</label><textarea class="ftextarea" id="f-notes" placeholder="Robot behavior, highlights, issues..."></textarea></div>
-  </div>
-  <div class="rating-block">
-    <div class="rb-title">Performance Ratings (1–10)</div>
-    <div id="ratings-container"></div>
-  </div>
-  <button class="btn-primary" id="submit-btn" onclick="submitScout()" disabled>Submit Scouting Entry</button>
-</div>
-
-<!-- PAGE 2: DATABASE -->
-<div class="page" id="page-database">
-  <div class="sh"><div class="sh-bar" style="background:var(--gold)"></div><div><div class="sh-title" style="color:var(--gold2)">Database</div><div class="sh-sub">// Live shared data — admin only</div></div></div>
-  <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
-    <button class="btn-outline" onclick="openFBModal()">⚡ Firebase Config</button>
-    <span style="font-family:var(--fm);font-size:10px;color:var(--text3);align-self:center" id="fb-status-text">Not connected</span>
-  </div>
-  <div class="tba-cfg">
-    <div class="tba-cfg-title">The Blue Alliance API — Rebuilt 2026</div>
-    <div class="tba-grid">
-      <div><div class="fb-label" style="margin-bottom:4px">Read API Key</div><input class="fb-input finput" id="tba-key" type="text" placeholder="Paste TBA key..."></div>
-      <div><div class="fb-label" style="margin-bottom:4px">Event Key</div><input class="fb-input finput" id="tba-event" type="text" placeholder="e.g. 2026mnmi" oninput="syncEventKeyDisplay()"></div>
-    </div>
-    <div class="tba-actions">
-      <button class="btn-outline" onclick="saveTBACfg()">Save Config</button>
-      <button class="btn-outline" onclick="fetchTBA()">Fetch TBA Data</button>
-    </div>
-    <div class="tba-status" id="tba-status">No API key configured</div>
-    <div class="fuel-banner" style="margin-top:10px;margin-bottom:0">🔥 Pulls Hub Auto Fuel, Hub Teleop Fuel, and Hub Total Fuel counts per team from match score breakdowns</div>
-    <div class="tba-help">Free key: <a href="https://www.thebluealliance.com/account" target="_blank">thebluealliance.com/account</a> → "Read API Keys"</div>
-  </div>
-  <div class="tabs">
-    <button class="tab-btn active" onclick="switchTab('scouted',this)">Scouted</button>
-    <button class="tab-btn" onclick="switchTab('tba',this)">TBA Data</button>
-  </div>
-  <div id="tab-scouted">
-    <div class="tbl-ctrl">
-      <input class="finput" style="width:140px;padding:6px 9px;font-size:12px" placeholder="Filter..." id="tbl-filter" oninput="renderTable()">
-      <button class="btn-outline" onclick="exportCSV()">Export CSV</button>
-      <button class="btn-danger" onclick="clearData()">Clear All</button>
-      <span style="font-family:var(--fm);font-size:10px;color:var(--text3)" id="rec-count"></span>
-    </div>
-    <div class="tbl-wrap">
-      <table class="tbl" id="scout-tbl">
-        <thead><tr>
-          <th onclick="sort('match')">Match</th>
-          <th onclick="sort('team')">Team</th>
-          <th onclick="sort('alliance')">Alliance</th>
-          <th onclick="sort('driverSkill')">Driver</th>
-          <th onclick="sort('accuracy')">Accuracy</th>
-          <th onclick="sort('speed')">Speed</th>
-          <th onclick="sort('defense')">Defense</th>
-          <th onclick="sort('consistency')">Consist.</th>
-          <th onclick="sort('autoScore')">Auto</th>
-          <th onclick="sort('avgRating')">Avg</th>
-          <th onclick="sort('endgame')">Endgame</th>
-          <th onclick="sort('fouls')">Fouls</th>
-          <th>Scout</th>
-          <th>Notes</th>
-          <th></th>
-        </tr></thead>
-        <tbody id="scout-tbody"></tbody>
-      </table>
-    </div>
-    <div class="empty" id="tbl-empty" style="display:none">No scouting data yet</div>
-  </div>
-  <div id="tab-tba" style="display:none">
-    <div class="api-banner">Objective data from The Blue Alliance including Hub Fuel counts per team (Rebuilt 2026).</div>
-    <div class="tbl-wrap">
-      <table class="tbl">
-        <thead><tr>
-          <th>Team</th><th>Rank</th><th>OPR</th><th>DPR</th><th>CCWM</th><th>W-L-T</th><th>Avg Score</th>
-          <th class="fuel-col th-divider">Avg Auto Fuel</th>
-          <th class="fuel-col">Avg Teleop Fuel</th>
-          <th class="fuel-col">Avg Total Fuel</th>
-        </tr></thead>
-        <tbody id="tba-tbody"><tr><td colspan="10" style="text-align:center;color:var(--text3);padding:20px;font-family:var(--fm);font-size:11px">No TBA data loaded — click Fetch TBA Data</td></tr></tbody>
-      </table>
-    </div>
-  </div>
-</div>
-
-<!-- PAGE 3: STRATEGY -->
-<div class="page" id="page-strategy">
-  <div class="sh"><div class="sh-bar" style="background:var(--accent2)"></div><div><div class="sh-title" style="color:var(--accent3)">Strategy Center</div><div class="sh-sub">// Predictions & analysis — admin only</div></div></div>
-  <div class="strat-grid">
-
-    <!-- TEAM LOOKUP -->
-    <div class="scard full" style="border-top-color:var(--gold)">
-      <div class="scard-title gt">Team Lookup</div>
-      <div class="lookup-wrap">
-        <div class="lookup-row">
-          <input class="finput" id="lookup-input" type="number" placeholder="Enter team number..." style="flex:1">
-          <button class="btn-outline" onclick="lookupTeam()">Look Up</button>
-        </div>
-      </div>
-      <div id="lookup-result" style="display:none"></div>
-    </div>
-
-    <!-- TOP TEAMS -->
-    <div class="scard">
-      <div class="scard-title">Top Teams (Composite)</div>
-      <div id="strat-top"><div class="empty" style="padding:16px">No data yet</div></div>
-    </div>
-
-    <!-- FIELD SUMMARY -->
-    <div class="scard gold-t">
-      <div class="scard-title gt">Field Summary</div>
-      <div id="strat-summary"><div class="empty" style="padding:16px">No data yet</div></div>
-    </div>
-
-    <!-- MATCH PREDICTOR -->
-    <div class="scard full">
-      <div class="scard-title">Match Predictor</div>
-      <div class="pred-wrap">
-        <div class="pred-al red">
-          <span class="pred-al-label">Red Alliance</span>
-          <div class="pred-teams-row"><input class="pred-tinput" id="pr1" placeholder="T1"><input class="pred-tinput" id="pr2" placeholder="T2"><input class="pred-tinput" id="pr3" placeholder="T3"></div>
-        </div>
-        <div style="font-family:var(--fh);font-size:13px;color:var(--text3);padding-bottom:4px">vs</div>
-        <div class="pred-al blue">
-          <span class="pred-al-label">Blue Alliance</span>
-          <div class="pred-teams-row"><input class="pred-tinput" id="pb1" placeholder="T1"><input class="pred-tinput" id="pb2" placeholder="T2"><input class="pred-tinput" id="pb3" placeholder="T3"></div>
-        </div>
-        <button class="btn-outline" style="align-self:flex-end" onclick="predict()">Predict</button>
-      </div>
-      <div id="pred-result" style="display:none"></div>
-    </div>
-
-    <!-- PICK LIST -->
-    <div class="scard full">
-      <div class="scard-title">Alliance Pick List</div>
-      <p style="font-size:11px;color:var(--text3);font-family:var(--fm);margin-bottom:10px;letter-spacing:1px">Composite score = scouting avg (60%) + normalized total fuel (40%) when TBA data available</p>
-      <div id="strat-picklist"><div class="empty" style="padding:16px">Scout more teams first</div></div>
-    </div>
-
-  </div>
-</div>
-
-<script type="module">
-import{initializeApp,getApps,getApp}from'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-import{getDatabase,ref,set,onValue,remove,push}from'https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js';
-import{getAuth,signInAnonymously,onAuthStateChanged}from'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
-
-const ADMIN_PIN="3206";
-let isAdmin=false,pendingPage=null,pendingBtn=null;
-let scoutData={},tbaData={},tbaKey='',eventKey='';
-let sortKey='match',sortAsc=true;
-let fbDB=null,fbAuth=null,fbRef=null,currentUser=null;
-
-const RATINGS=[
-  {id:'driverSkill',label:'Driver Skill'},
-  {id:'accuracy',label:'Scoring Accuracy'},
-  {id:'speed',label:'Robot Speed'},
-  {id:'defense',label:'Defense Quality'},
-  {id:'consistency',label:'Consistency'},
-  {id:'autoScore',label:'Auto Performance'},
-  {id:'adaptability',label:'Adaptability'},
-  {id:'coopPlay',label:'Co-op / Teamwork'},
-];
-
-// ── AUTH UI ──
-function setAuthUI(state,msg){
-  const b=document.getElementById('auth-banner');
-  b.className='auth-banner '+state;
-  document.getElementById('auth-banner-text').textContent=msg;
-  const d=document.getElementById('sync-dot'),l=document.getElementById('sync-label');
-  if(state==='authed'){d.className='sync-dot ok';l.textContent='LIVE';document.getElementById('submit-btn').disabled=false}
-  else if(state==='pending'){d.className='sync-dot auth';l.textContent='AUTH...';document.getElementById('submit-btn').disabled=true}
-  else{d.className='sync-dot err';l.textContent='OFFLINE';document.getElementById('submit-btn').disabled=false}
-}
-
-// ── FIREBASE ──
-function loadFBConfig(){try{const c=localStorage.getItem('twrecks_fbcfg');return c?JSON.parse(c):null}catch{return null}}
-function connectFirebase(cfg){
+<script>
+async function inspect(){
+  const key=document.getElementById('tba-key').value.trim();
+  const ev=document.getElementById('tba-event').value.trim();
+  const log=document.getElementById('log');
+  const status=document.getElementById('status');
+  log.className='log-box';
+  if(!key||!ev){log.textContent='Please fill in both fields.';return}
+  status.textContent='Fetching matches for '+ev+'...';
   try{
-    const app=getApps().find(a=>a.name==='twrecks')||initializeApp({apiKey:cfg.apiKey,databaseURL:cfg.databaseURL,projectId:cfg.projectId},'twrecks');
-    fbDB=getDatabase(app);fbAuth=getAuth(app);
-    document.getElementById('fb-status-text').textContent='Authenticating...';
-    setAuthUI('pending','Signing in anonymously...');
-    signInAnonymously(fbAuth).catch(e=>{
-      setAuthUI('failed','Auth failed ('+e.code+') — check Firebase anonymous auth is enabled');
-      document.getElementById('fb-status-text').textContent='Auth error: '+e.code;
-    });
-    onAuthStateChanged(fbAuth,user=>{
-      if(user){
-        currentUser=user;fbRef=ref(fbDB,'twrecks3206/scoutData');
-        setAuthUI('authed','✓ Signed in anonymously — live sync active');
-        document.getElementById('fb-status-text').textContent='✓ Connected · UID: '+user.uid.slice(0,8)+'...';
-        onValue(fbRef,snap=>{
-          scoutData={};const val=snap.val();if(val)scoutData=val;
-          if(document.getElementById('page-database').classList.contains('active'))renderTable();
-          if(document.getElementById('page-strategy').classList.contains('active'))renderStrategy();
-        });
-      }else{currentUser=null;setAuthUI('failed','Not signed in — submissions save locally')}
-    });
-  }catch(e){setAuthUI('failed','Firebase init failed: '+e.message);document.getElementById('fb-status-text').textContent='Error: '+e.message}
-}
+    const h={'X-TBA-Auth-Key':key};
+    const r=await fetch(`https://www.thebluealliance.com/api/v3/event/${ev}/matches`,{headers:h});
+    if(!r.ok){log.textContent='HTTP '+r.status+': '+r.statusText+'\n\nCheck your API key and event key.';log.className='log-box has-error';status.textContent='Error';return}
+    const matches=await r.json();
+    if(!Array.isArray(matches)||matches.length===0){log.textContent='No matches returned for event: '+ev;log.className='log-box has-error';status.textContent='No matches found';return}
 
-// ── INIT ──
-function init(){
-  const fbcfg=loadFBConfig();
-  if(fbcfg){
-    document.getElementById('fb-url').value=fbcfg.databaseURL||'';
-    document.getElementById('fb-apikey').value=fbcfg.apiKey||'';
-    document.getElementById('fb-projectid').value=fbcfg.projectId||'';
-    connectFirebase(fbcfg);
-  }else setAuthUI('failed','No Firebase config — admin sets up in Database page');
-  try{const k=localStorage.getItem('twrecks_tbakey');if(k){tbaKey=k;document.getElementById('tba-key').value=k}}catch{}
-  try{const ev=localStorage.getItem('twrecks_eventkey');if(ev){eventKey=ev;document.getElementById('tba-event').value=ev}}catch{}
-  try{const t=localStorage.getItem('twrecks_tba');if(t)tbaData=JSON.parse(t)}catch{}
-  syncEventKeyDisplay();buildRatings();
-  if(Object.keys(tbaData).length)renderTBATable();
-  if(tbaKey)document.getElementById('tba-status').textContent='✓ TBA key loaded';
-}
+    // Find first match with a score_breakdown
+    const m=matches.find(m=>m.score_breakdown&&(m.score_breakdown.red||m.score_breakdown.blue));
+    if(!m){
+      log.textContent='Matches found ('+matches.length+') but none have a score_breakdown yet.\n\nScores may not be posted on TBA for this event yet.';
+      status.textContent=matches.length+' matches found, no breakdowns yet';
+      return;
+    }
 
-function buildRatings(){
-  document.getElementById('ratings-container').innerHTML=RATINGS.map(r=>`
-    <div class="rrow">
-      <span class="rlabel">${r.label}</span>
-      <input class="rslider" type="range" min="1" max="10" value="5" id="r-${r.id}" oninput="document.getElementById('rv-${r.id}').textContent=this.value">
-      <span class="rval" id="rv-${r.id}">5</span>
-    </div>`).join('');
-}
-window.buildRatings=buildRatings;
+    const bd=m.score_breakdown;
+    const redKeys=bd.red?Object.keys(bd.red):[];
+    const blueKeys=bd.blue?Object.keys(bd.blue):[];
 
-// ── NAV ──
-window.gotoPage=function(page,btn){
-  if((page==='database'||page==='strategy')&&!isAdmin){pendingPage=page;pendingBtn=btn;openAdminModal();return}
-  activatePage(page,btn);
-};
-function activatePage(page,btn){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
-  document.getElementById('page-'+page).classList.add('active');btn.classList.add('active');
-  if(page==='database'){renderTable();renderTBATable()}
-  if(page==='strategy')renderStrategy();
-}
+    // Show a full sample of one alliance breakdown
+    const sample=JSON.stringify(bd.red||bd.blue,null,2);
 
-// ── ADMIN ──
-window.openAdminModal=function(){
-  document.getElementById('pin-input').value='';document.getElementById('pin-err').textContent='';
-  document.getElementById('admin-overlay').style.display='flex';
-  setTimeout(()=>document.getElementById('pin-input').focus(),50);
-};
-window.closeAdminModal=function(){document.getElementById('admin-overlay').style.display='none';pendingPage=null;pendingBtn=null};
-window.tryPin=function(){
-  if(document.getElementById('pin-input').value===ADMIN_PIN){
-    isAdmin=true;document.getElementById('admin-overlay').style.display='none';
-    document.getElementById('admin-pill').textContent='ADMIN';document.getElementById('admin-pill').className='admin-pill unlocked';
-    document.getElementById('admin-btn').textContent='Lock';document.getElementById('admin-btn').onclick=lockAdmin;
-    document.querySelectorAll('.glocked').forEach(t=>t.classList.replace('glocked','gunlocked'));
-    if(pendingPage&&pendingBtn){activatePage(pendingPage,pendingBtn);pendingPage=null;pendingBtn=null}
-  }else{document.getElementById('pin-err').textContent='Incorrect PIN';document.getElementById('pin-input').value='';document.getElementById('pin-input').focus()}
-};
-function lockAdmin(){
-  isAdmin=false;document.getElementById('admin-pill').textContent='SCOUTER';document.getElementById('admin-pill').className='admin-pill locked';
-  document.getElementById('admin-btn').textContent='Login';document.getElementById('admin-btn').onclick=openAdminModal;
-  document.querySelectorAll('.gunlocked').forEach(t=>t.classList.replace('gunlocked','glocked'));
-  document.querySelectorAll('.nav-tab')[0].click();
-}
-window.lockAdmin=lockAdmin;
+    // Highlight fuel-related keys
+    const fuelKeys=[...redKeys,...blueKeys].filter((k,i,a)=>a.indexOf(k)===i).filter(k=>
+      k.toLowerCase().includes('fuel')||k.toLowerCase().includes('hub')||
+      k.toLowerCase().includes('auto')||k.toLowerCase().includes('teleop')
+    );
 
-// ── FB MODAL ──
-window.openFBModal=function(){document.getElementById('fb-overlay').style.display='flex'};
-window.closeFBModal=function(){document.getElementById('fb-overlay').style.display='none'};
-window.saveFBConfig=function(){
-  const cfg={databaseURL:document.getElementById('fb-url').value.trim(),apiKey:document.getElementById('fb-apikey').value.trim(),projectId:document.getElementById('fb-projectid').value.trim()};
-  if(!cfg.databaseURL||!cfg.apiKey){alert('Fill in at least Database URL and API Key.');return}
-  localStorage.setItem('twrecks_fbcfg',JSON.stringify(cfg));connectFirebase(cfg);document.getElementById('fb-overlay').style.display='none';
-};
-
-// ── TBA ──
-window.syncEventKeyDisplay=function(){
-  const val=(document.getElementById('tba-event').value||'').trim()||eventKey;
-  const d=document.getElementById('scout-ev-display');
-  if(val){d.className='ev-val';d.textContent=val.toUpperCase()}else{d.className='ev-none';d.textContent='Not set — admin configures in Database'}
-};
-window.saveTBACfg=function(){
-  tbaKey=document.getElementById('tba-key').value.trim();eventKey=document.getElementById('tba-event').value.trim();
-  if(!tbaKey){alert('Enter a TBA API key.');return}
-  localStorage.setItem('twrecks_tbakey',tbaKey);localStorage.setItem('twrecks_eventkey',eventKey);
-  document.getElementById('tba-status').textContent='✓ Saved'+(eventKey?' — Event: '+eventKey.toUpperCase():'');
-  syncEventKeyDisplay();
-};
-
-// ── FETCH TBA — includes match breakdowns for fuel counts ──
-window.fetchTBA=async function(){
-  if(!tbaKey){alert('Save a TBA key first.');return}
-  const ev=document.getElementById('tba-event').value.trim()||eventKey;
-  if(!ev){alert('Enter an event key (e.g. 2026mnmi).');return}
-  const st=document.getElementById('tba-status');
-  st.textContent='Fetching '+ev+'...';
-  try{
-    const h={'X-TBA-Auth-Key':tbaKey};
-    // Fetch rankings, OPRs, AND matches (for score breakdowns)
-    const[rr,or,mr]=await Promise.all([
-      fetch(`https://www.thebluealliance.com/api/v3/event/${ev}/rankings`,{headers:h}),
-      fetch(`https://www.thebluealliance.com/api/v3/event/${ev}/oprs`,{headers:h}),
-      fetch(`https://www.thebluealliance.com/api/v3/event/${ev}/matches`,{headers:h})
-    ]);
-    const rj=await rr.json(),oj=await or.json(),mj=await mr.json();
-    const nd={};
-
-    // Rankings
-    if(rj.rankings)rj.rankings.forEach(r=>{
-      const tn=r.team_key.replace('frc','');nd[tn]=nd[tn]||{};
-      nd[tn].rank=r.rank;nd[tn].wins=r.record?.wins||0;nd[tn].losses=r.record?.losses||0;nd[tn].ties=r.record?.ties||0;nd[tn].avgScore=r.sort_orders?.[0];
-    });
-
-    // OPRs
-    if(oj.oprs)Object.entries(oj.oprs).forEach(([k,v])=>{const tn=k.replace('frc','');nd[tn]=nd[tn]||{};nd[tn].opr=v});
-    if(oj.dprs)Object.entries(oj.dprs).forEach(([k,v])=>{const tn=k.replace('frc','');if(nd[tn])nd[tn].dpr=v});
-    if(oj.ccwms)Object.entries(oj.ccwms).forEach(([k,v])=>{const tn=k.replace('frc','');if(nd[tn])nd[tn].ccwm=v});
-
-    // ── FUEL COUNTS from match score_breakdown ──
-    // Accumulate per team across all matches they played
-    const fuelAccum={};// {teamNum: {autoFuel:[], teleopFuel:[], totalFuel:[]}}
-
-    if(Array.isArray(mj)){
-      mj.forEach(match=>{
-        const sb=match.score_breakdown;
-        if(!sb)return;
-        ['red','blue'].forEach(color=>{
-          const allianceData=match.alliances?.[color];
-          const breakdown=sb[color];
-          if(!allianceData||!breakdown)return;
-          allianceData.team_keys.forEach(tk=>{
-            const tn=tk.replace('frc','');
-            if(!fuelAccum[tn])fuelAccum[tn]={autoFuel:[],teleopFuel:[],totalFuel:[]};
-            // TBA 2026 Rebuilt field names from FMS score breakdown
-            const autoF=breakdown.hubAutoFuelCount??breakdown.autoFuelCount??breakdown.autoFuel??null;
-            const teleopF=breakdown.hubTeleopFuelCount??breakdown.teleopFuelCount??breakdown.teleopFuel??null;
-            const totalF=breakdown.hubTotalFuelCount??breakdown.totalFuelCount??breakdown.totalFuel??(autoF!=null&&teleopF!=null?autoF+teleopF:null);
-            if(autoF!=null)fuelAccum[tn].autoFuel.push(autoF);
-            if(teleopF!=null)fuelAccum[tn].teleopFuel.push(teleopF);
-            if(totalF!=null)fuelAccum[tn].totalFuel.push(totalF);
-          });
-        });
+    let out='';
+    out+='✓ Match found: '+m.key+'\n';
+    out+='✓ Total matches fetched: '+matches.length+'\n\n';
+    out+='═══════════════════════════════════════\n';
+    out+='FUEL / HUB / AUTO / TELEOP RELATED KEYS:\n';
+    out+='═══════════════════════════════════════\n';
+    if(fuelKeys.length===0){
+      out+='⚠ No keys containing "fuel", "hub", "auto", or "teleop" found.\n';
+      out+='This is unexpected — see full breakdown below.\n';
+    }else{
+      fuelKeys.forEach(k=>{
+        const val=bd.red?bd.red[k]:bd.blue[k];
+        out+=`  "${k}": ${JSON.stringify(val)}\n`;
       });
     }
+    out+='\n═══════════════════════════════════════\n';
+    out+='FULL RED ALLIANCE BREAKDOWN:\n';
+    out+='═══════════════════════════════════════\n';
+    out+=sample;
 
-    // Average fuel counts per team
-    Object.entries(fuelAccum).forEach(([tn,f])=>{
-      nd[tn]=nd[tn]||{};
-      nd[tn].avgAutoFuel=f.autoFuel.length?parseFloat((f.autoFuel.reduce((s,v)=>s+v,0)/f.autoFuel.length).toFixed(1)):null;
-      nd[tn].avgTeleopFuel=f.teleopFuel.length?parseFloat((f.teleopFuel.reduce((s,v)=>s+v,0)/f.teleopFuel.length).toFixed(1)):null;
-      nd[tn].avgTotalFuel=f.totalFuel.length?parseFloat((f.totalFuel.reduce((s,v)=>s+v,0)/f.totalFuel.length).toFixed(1)):null;
-    });
-
-    tbaData=nd;localStorage.setItem('twrecks_tba',JSON.stringify(tbaData));
-    const fuelTeams=Object.values(nd).filter(d=>d.avgTotalFuel!=null).length;
-    st.textContent=`✓ Loaded ${Object.keys(nd).length} teams from ${ev.toUpperCase()} — fuel data for ${fuelTeams} teams`;
-    renderTBATable();
-    if(document.getElementById('page-strategy').classList.contains('active'))renderStrategy();
-  }catch(e){st.textContent='Error: '+e.message;console.error(e)}
-};
-
-// ── SUBMIT ──
-window.submitScout=async function(){
-  const team=document.getElementById('f-team').value.trim();
-  const match=document.getElementById('f-match').value.trim();
-  const scout=document.getElementById('f-scout').value.trim();
-  if(!team||!match||!scout){alert('Fill in Team #, Match #, and Scout Name.');return}
-  let sum=0;const ratings={};
-  RATINGS.forEach(r=>{const v=parseInt(document.getElementById('r-'+r.id).value);ratings[r.id]=v;sum+=v});
-  const entry={
-    event:eventKey||'N/A',match:parseInt(match),team:parseInt(team),
-    alliance:document.getElementById('f-alliance').value,startPos:document.getElementById('f-startpos').value,
-    auto:document.getElementById('f-auto').value,endgame:document.getElementById('f-endgame').value,
-    fouls:parseInt(document.getElementById('f-fouls').value)||0,
-    defenseType:document.getElementById('f-defense').value,
-    notes:document.getElementById('f-notes').value.trim(),
-    scout,timestamp:new Date().toISOString(),
-    avgRating:parseFloat((sum/RATINGS.length).toFixed(1)),...ratings,
-    uid:currentUser?currentUser.uid:'local'
-  };
-  if(fbDB&&fbRef&&currentUser){
-    try{await push(fbRef,entry)}
-    catch(e){
-      if(e.code==='PERMISSION_DENIED'){alert('Write blocked — enable Anonymous Auth in Firebase: Authentication → Sign-in method → Anonymous → Enable');return}
-      const id='local_'+Date.now();scoutData[id]=entry;renderTable();
-    }
-  }else{const id='local_'+Date.now();scoutData[id]=entry}
-  const ok=document.getElementById('scout-ok');ok.style.display='block';setTimeout(()=>ok.style.display='none',3000);
-  document.getElementById('f-match').value='';document.getElementById('f-team').value='';
-  document.getElementById('f-notes').value='';document.getElementById('f-fouls').value='0';
-  RATINGS.forEach(r=>{document.getElementById('r-'+r.id).value=5;document.getElementById('rv-'+r.id).textContent='5'});
-};
-
-// ── TABLE ──
-window.renderTable=function(){
-  const filter=(document.getElementById('tbl-filter').value||'').toLowerCase();
-  const arr=Object.entries(scoutData).map(([k,v])=>({...v,_key:k}));
-  let data=arr.filter(e=>!filter||String(e.team).includes(filter)||String(e.scout||'').toLowerCase().includes(filter));
-  data.sort((a,b)=>{let va=a[sortKey],vb=b[sortKey];if(typeof va==='string')va=va.toLowerCase();if(typeof vb==='string')vb=vb.toLowerCase();return sortAsc?(va>vb?1:-1):(va<vb?1:-1)});
-  document.getElementById('rec-count').textContent=data.length+' record'+(data.length!==1?'s':'');
-  document.getElementById('tbl-empty').style.display=data.length===0?'block':'none';
-  document.getElementById('scout-tbl').style.display=data.length===0?'none':'';
-  document.getElementById('scout-tbody').innerHTML=data.map(e=>`<tr>
-    <td>${e.match}</td><td><span class="badge bp">${e.team}</span></td>
-    <td><span class="badge ${e.alliance==='Red'?'br':'bb'}">${e.alliance}</span></td>
-    <td>${e.driverSkill||'-'}</td><td>${e.accuracy||'-'}</td><td>${e.speed||'-'}</td>
-    <td>${e.defense||'-'}</td><td>${e.consistency||'-'}</td><td>${e.autoScore||'-'}</td>
-    <td><span class="badge ${(e.avgRating||0)>=7?'bgr':(e.avgRating||0)>=5?'bp':'br'}">${e.avgRating||'-'}</span></td>
-    <td style="font-size:10px;max-width:80px;overflow:hidden;text-overflow:ellipsis">${e.endgame||'-'}</td>
-    <td>${e.fouls||0}</td>
-    <td style="color:var(--text3);font-size:10px">${e.scout||''}</td>
-    <td style="max-width:100px;overflow:hidden;text-overflow:ellipsis;font-size:10px;color:var(--text3)" title="${e.notes||''}">${e.notes||'—'}</td>
-    <td><button class="btn-sm-icon" onclick="deleteEntry('${e._key}')">×</button></td>
-  </tr>`).join('');
-};
-window.sort=function(k){sortKey===k?(sortAsc=!sortAsc):(sortKey=k,sortAsc=true);renderTable()};
-window.deleteEntry=async function(key){
-  if(!confirm('Delete this entry?'))return;
-  if(fbDB&&fbRef&&currentUser){try{await remove(ref(fbDB,'twrecks3206/scoutData/'+key))}catch{delete scoutData[key];renderTable()}}
-  else{delete scoutData[key];renderTable()}
-};
-window.clearData=async function(){
-  if(!confirm('Clear ALL scouting data? Cannot be undone.'))return;
-  if(fbDB&&fbRef&&currentUser){try{await set(fbRef,null)}catch{}}else{scoutData={};renderTable()}
-};
-
-function renderTBATable(){
-  const teams=Object.keys(tbaData);if(!teams.length)return;
-  document.getElementById('tba-tbody').innerHTML=teams
-    .sort((a,b)=>(tbaData[a].rank||999)-(tbaData[b].rank||999))
-    .map(t=>{const d=tbaData[t];return`<tr>
-      <td><span class="badge bg2">${t}</span></td>
-      <td>${d.rank||'—'}</td>
-      <td>${d.opr!=null?d.opr.toFixed(1):'—'}</td>
-      <td>${d.dpr!=null?d.dpr.toFixed(1):'—'}</td>
-      <td>${d.ccwm!=null?d.ccwm.toFixed(1):'—'}</td>
-      <td>${d.wins!=null?d.wins+'-'+d.losses+'-'+d.ties:'—'}</td>
-      <td>${d.avgScore!=null?d.avgScore.toFixed(1):'—'}</td>
-      <td style="border-left:2px solid rgba(251,146,60,.2)"><span class="badge bo">${d.avgAutoFuel!=null?d.avgAutoFuel:'—'}</span></td>
-      <td><span class="badge bo">${d.avgTeleopFuel!=null?d.avgTeleopFuel:'—'}</span></td>
-      <td><span class="badge bo">${d.avgTotalFuel!=null?d.avgTotalFuel:'—'}</span></td>
-    </tr>`}).join('');
+    log.textContent=out;
+    status.textContent='✓ Done — copy the output above and paste it to Claude';
+  }catch(e){
+    log.textContent='Error: '+e.message;
+    log.className='log-box has-error';
+    status.textContent='Failed';
+  }
 }
 
-window.switchTab=function(tab,btn){
-  document.querySelectorAll('.tab-btn').forEach(t=>t.classList.remove('active'));btn.classList.add('active');
-  document.getElementById('tab-scouted').style.display=tab==='scouted'?'block':'none';
-  document.getElementById('tab-tba').style.display=tab==='tba'?'block':'none';
-};
-window.exportCSV=function(){
-  const arr=Object.values(scoutData);if(!arr.length){alert('No data to export.');return}
-  const h=['Event','Match','Team','Alliance','StartPos','DriverSkill','Accuracy','Speed','Defense','Consistency','AutoPerf','Adaptability','CoopPlay','AvgRating','AutoStrategy','Endgame','Fouls','DefenseType','Scout','Notes','Timestamp'];
-  const rows=arr.map(e=>[e.event,e.match,e.team,e.alliance,e.startPos,e.driverSkill,e.accuracy,e.speed,e.defense,e.consistency,e.autoScore,e.adaptability,e.coopPlay,e.avgRating,'"'+e.auto+'"','"'+e.endgame+'"',e.fouls,e.defenseType,'"'+e.scout+'"','"'+(e.notes||'').replace(/"/g,"'")+'"',e.timestamp]);
-  const csv=[h.join(','),...rows.map(r=>r.join(','))].join('\n');
-  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download='royal_twrecks_3206_scouting.csv';a.click();
-};
-
-// ── STRATEGY — composite score includes fuel ──
-function getTeamMap(){
-  const m={};
-  Object.values(scoutData).forEach(e=>{
-    if(!m[e.team])m[e.team]={total:0,count:0,ratings:{},matches:[]};
-    m[e.team].total+=e.avgRating||0;m[e.team].count++;m[e.team].matches.push(e);
-    RATINGS.forEach(r=>{m[e.team].ratings[r.id]=(m[e.team].ratings[r.id]||0)+(e[r.id]||0)});
+function copyLog(){
+  const text=document.getElementById('log').textContent;
+  navigator.clipboard.writeText(text).then(()=>{
+    const b=document.querySelector('.copy-btn');
+    b.textContent='✓ Copied!';
+    setTimeout(()=>b.textContent='Copy Output',2000);
   });
-  return m;
 }
-
-// Find max total fuel for normalization
-function maxFuel(){
-  const vals=Object.values(tbaData).map(d=>d.avgTotalFuel).filter(v=>v!=null);
-  return vals.length?Math.max(...vals):null;
-}
-
-function compositeScore(scoutAvg,teamNum){
-  const td=tbaData[teamNum];
-  const mf=maxFuel();
-  if(td?.avgTotalFuel!=null&&mf&&mf>0){
-    const fuelNorm=(td.avgTotalFuel/mf)*10;
-    return parseFloat((scoutAvg*0.6+fuelNorm*0.4).toFixed(2));
-  }
-  return scoutAvg;
-}
-
-function getTeams(map){
-  return Object.entries(map).map(([t,d])=>({
-    team:t,
-    scoutAvg:parseFloat((d.total/d.count).toFixed(1)),
-    composite:compositeScore(d.total/d.count,t),
-    count:d.count,matches:d.matches,
-    driverSkill:parseFloat((d.ratings.driverSkill/d.count).toFixed(1)),
-    accuracy:parseFloat((d.ratings.accuracy/d.count).toFixed(1)),
-    autoScore:parseFloat((d.ratings.autoScore/d.count).toFixed(1)),
-    speed:parseFloat((d.ratings.speed/d.count).toFixed(1)),
-    avgAutoFuel:tbaData[t]?.avgAutoFuel,
-    avgTeleopFuel:tbaData[t]?.avgTeleopFuel,
-    avgTotalFuel:tbaData[t]?.avgTotalFuel,
-  })).sort((a,b)=>b.composite-a.composite);
-}
-
-window.renderStrategy=function(){
-  const map=getTeamMap(),teams=getTeams(map);
-  const hasFuel=Object.values(tbaData).some(d=>d.avgTotalFuel!=null);
-
-  document.getElementById('strat-top').innerHTML=!teams.length?'<div class="empty" style="padding:16px">No data yet</div>':
-    teams.slice(0,8).map((t,i)=>`<div class="rank-row">
-      <span class="rank-n" style="color:${i===0?'var(--gold)':i<3?'var(--accent3)':'var(--text3)'}">${i+1}</span>
-      <span class="rank-t">Team ${t.team}</span>
-      <span class="rank-s">${t.composite}</span>
-      ${t.avgTotalFuel!=null?`<span class="rank-e" style="color:var(--orange)">⛽${t.avgTotalFuel}</span>`:''}
-      <span class="rank-e">(${t.count})</span>
-    </div>`).join('');
-
-  if(!Object.keys(scoutData).length){document.getElementById('strat-summary').innerHTML='<div class="empty" style="padding:16px">No data yet</div>'}
-  else{
-    const allAvg=(Object.values(scoutData).reduce((s,e)=>s+(e.avgRating||0),0)/Object.values(scoutData).length).toFixed(1);
-    const fuelVals=Object.values(tbaData).map(d=>d.avgTotalFuel).filter(v=>v!=null);
-    const avgFuelField=fuelVals.length?(fuelVals.reduce((s,v)=>s+v,0)/fuelVals.length).toFixed(1):'—';
-    document.getElementById('strat-summary').innerHTML=`
-      <div class="stat-row"><span class="stat-name">Teams Scouted</span><span class="stat-v">${Object.keys(map).length}</span></div>
-      <div class="stat-row"><span class="stat-name">Total Entries</span><span class="stat-v">${Object.keys(scoutData).length}</span></div>
-      <div class="stat-row"><span class="stat-name">Field Avg Rating</span><span class="stat-v">${allAvg}</span></div>
-      <div class="stat-row"><span class="stat-name">Top Team</span><span class="stat-v">${teams[0]?teams[0].team:'—'}</span></div>
-      <div class="stat-row"><span class="stat-name">Field Avg Total Fuel</span><span class="stat-v" style="color:var(--orange)">${avgFuelField}</span></div>
-      <div class="stat-row"><span class="stat-name">Active Event</span><span class="stat-v" style="font-size:11px">${eventKey?eventKey.toUpperCase():'—'}</span></div>`;
-  }
-
-  document.getElementById('strat-picklist').innerHTML=!teams.length?'<div class="empty" style="padding:16px">Scout more teams first</div>':
-    `<div class="tbl-wrap"><table class="tbl" style="min-width:500px"><thead><tr>
-      <th>Rank</th><th>Team</th><th>Composite</th><th>Scout Avg</th><th>Driver</th><th>Accuracy</th><th>Auto</th>
-      <th class="fuel-col th-divider">Auto Fuel</th><th class="fuel-col">Teleop Fuel</th><th class="fuel-col">Total Fuel</th>
-      <th>Matches</th>
-    </tr></thead><tbody>${teams.map((t,i)=>`<tr>
-      <td><span class="badge ${i<1?'bg2':i<3?'bp':'bgr'}">#${i+1}</span></td>
-      <td style="color:var(--text);font-weight:500">${t.team}</td>
-      <td><span class="badge ${t.composite>=7?'bgr':t.composite>=5?'bp':'br'}">${t.composite}</span></td>
-      <td>${t.scoutAvg}</td>
-      <td>${t.driverSkill}</td><td>${t.accuracy}</td><td>${t.autoScore}</td>
-      <td style="border-left:2px solid rgba(251,146,60,.2)"><span class="badge bo">${t.avgAutoFuel!=null?t.avgAutoFuel:'—'}</span></td>
-      <td><span class="badge bo">${t.avgTeleopFuel!=null?t.avgTeleopFuel:'—'}</span></td>
-      <td><span class="badge bo">${t.avgTotalFuel!=null?t.avgTotalFuel:'—'}</span></td>
-      <td style="color:var(--text3)">${t.count}</td>
-    </tr>`).join('')}</tbody></table></div>`;
-};
-
-// ── TEAM LOOKUP ──
-window.lookupTeam=function(){
-  const num=document.getElementById('lookup-input').value.trim();if(!num){alert('Enter a team number.');return}
-  const map=getTeamMap();const td=tbaData[num];const sd=map[num];
-  const res=document.getElementById('lookup-result');
-  if(!td&&!sd){res.style.display='block';res.innerHTML='<div class="empty" style="padding:16px">No data found for Team '+num+'</div>';return}
-  const entries=sd?sd.matches||[]:[];
-  const scoutAvg=sd?(sd.total/sd.count).toFixed(1):'N/A';
-  const comp=sd?compositeScore(sd.total/sd.count,num):'N/A';
-  res.style.display='block';
-  res.innerHTML=`<div class="lookup-res">
-    <div class="lu-header">
-      <div class="lu-num">Team ${num}</div>
-      <div>
-        <div class="lu-meta">${sd?sd.count+' match'+(sd.count!==1?'es':'')+' scouted':'No scouting data'}</div>
-        <div class="lu-meta">${td&&td.rank?'Rank #'+td.rank+(eventKey?' at '+eventKey.toUpperCase():''):''}</div>
-      </div>
-    </div>
-    <div class="lu-grid">
-      <div class="lu-stat"><div class="lu-stat-label">Composite Score</div><div class="lu-stat-val">${comp}</div></div>
-      <div class="lu-stat"><div class="lu-stat-label">Scout Avg</div><div class="lu-stat-val">${scoutAvg}</div></div>
-      <div class="lu-stat"><div class="lu-stat-label">OPR</div><div class="lu-stat-val">${td&&td.opr!=null?td.opr.toFixed(1):'—'}</div></div>
-      <div class="lu-stat"><div class="lu-stat-label">Driver Skill</div><div class="lu-stat-val">${sd?parseFloat((sd.ratings.driverSkill/sd.count).toFixed(1)):'—'}</div></div>
-      <div class="lu-stat"><div class="lu-stat-label">Accuracy</div><div class="lu-stat-val">${sd?parseFloat((sd.ratings.accuracy/sd.count).toFixed(1)):'—'}</div></div>
-      <div class="lu-stat"><div class="lu-stat-label">W-L-T</div><div class="lu-stat-val">${td&&td.wins!=null?td.wins+'-'+td.losses+'-'+td.ties:'—'}</div></div>
-      <div class="lu-stat fuel"><div class="lu-stat-label">⛽ Auto Fuel Avg</div><div class="lu-stat-val">${td?.avgAutoFuel!=null?td.avgAutoFuel:'—'}</div></div>
-      <div class="lu-stat fuel"><div class="lu-stat-label">⛽ Teleop Fuel Avg</div><div class="lu-stat-val">${td?.avgTeleopFuel!=null?td.avgTeleopFuel:'—'}</div></div>
-      <div class="lu-stat fuel"><div class="lu-stat-label">⛽ Total Fuel Avg</div><div class="lu-stat-val">${td?.avgTotalFuel!=null?td.avgTotalFuel:'—'}</div></div>
-    </div>
-    ${entries.length?`<div class="lu-match-title">Match History</div>
-      ${entries.sort((a,b)=>a.match-b.match).map(e=>`
-        <div class="lu-match-row">
-          <span class="badge ${e.alliance==='Red'?'br':'bb'}" style="font-size:9px">Q${e.match}</span>
-          <span style="color:var(--text2)">Avg ${e.avgRating}</span>
-          <span style="color:var(--text3);font-size:10px">${e.endgame||''}</span>
-          <span style="color:var(--text3);font-size:10px;margin-left:auto">${e.scout||''}</span>
-        </div>`).join('')}`:''}
-  </div>`;
-};
-
-// ── PREDICTOR — uses composite (scout + fuel) ──
-function getAvg(num){
-  const entries=Object.values(scoutData).filter(e=>String(e.team)===String(num));
-  const td=tbaData[num];
-  if(entries.length){
-    const scoutAvg=entries.reduce((s,e)=>s+(e.avgRating||0),0)/entries.length;
-    return compositeScore(scoutAvg,num);
-  }
-  // fallback to OPR-derived if no scout data
-  return td?.opr!=null?Math.min(10,td.opr/15):null;
-}
-window.predict=function(){
-  const red=['pr1','pr2','pr3'].map(id=>document.getElementById(id).value.trim()).filter(Boolean);
-  const blue=['pb1','pb2','pb3'].map(id=>document.getElementById(id).value.trim()).filter(Boolean);
-  if(!red.length||!blue.length){alert('Enter at least one team per alliance.');return}
-  const all=[...red,...blue].map(t=>getAvg(t)).filter(v=>v!==null);
-  const fb=all.length?all.reduce((s,v)=>s+v,0)/all.length:5;
-  const ra=red.map(t=>getAvg(t)??fb).reduce((s,v)=>s+v,0)/red.length;
-  const ba=blue.map(t=>getAvg(t)??fb).reduce((s,v)=>s+v,0)/blue.length;
-  const tot=ra+ba,rp=Math.round((ra/tot)*100),bp=100-rp;
-  const fav=rp>=bp?'RED':'BLUE',conf=Math.abs(rp-bp);
-  const cl=conf<8?'Too close to call':conf<20?'Slight advantage':'Strong favorite';
-  const miss=[...red,...blue].filter(t=>getAvg(t)===null);
-  const r=document.getElementById('pred-result');r.style.display='block';
-  r.innerHTML=`<div class="pred-res">
-    <div class="pred-rows">
-      ${red.map(t=>`<span class="tc red">${t}</span>`).join('')}
-      <span style="color:var(--text3);font-family:var(--fm);font-size:12px;padding:0 4px">vs</span>
-      ${blue.map(t=>`<span class="tc blue">${t}</span>`).join('')}
-    </div>
-    <div class="pred-pcts"><span style="color:var(--red)">Red ${rp}%</span><span style="color:var(--blue)">Blue ${bp}%</span></div>
-    <div class="pred-bar"><div class="pred-bar-r" style="width:${rp}%"></div><div class="pred-bar-b" style="width:${bp}%"></div></div>
-    <div class="pred-winner" style="color:${fav==='RED'?'var(--red)':'var(--blue)'}">${fav} — ${cl}</div>
-    <div class="pred-conf">Composite scores (scout avg + fuel): Red ${ra.toFixed(2)} | Blue ${ba.toFixed(2)}${miss.length?' · ⚠ No data for '+miss.join(', '):'· All teams have data'}</div>
-  </div>`;
-};
-
-init();
 </script>
 </body>
 </html>
