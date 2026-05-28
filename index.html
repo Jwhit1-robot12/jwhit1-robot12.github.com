@@ -1,3 +1,1255 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Exo+2:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#080a0f;--bg2:#0c0f18;--bg3:#111520;--bg4:#161c2c;
+  --border:rg3ba(168,124,255,0.12);--border2:rgba(168,124,255,0.28);
+  --accent:#a87cff;--accent2:#8b5cf6;--accent3:#c4b0ff;
+  --gold:#a87cff;--gold2:#a87cff;--goldbg:rgba(168, 124, 255, 1);
+  --red:#ff6b6b;--redbg:rgba(255,107,107,0.12);
+  --green:#4ade80;--greenbg:rgba(74,222,128,0.12);
+  --blue:#60a5fa;--bluebg:rgba(96,165,250,0.12);
+  --orange:#fb923c;--orangebg:rgba(251,146,60,0.12);
+  --text:#e8e4f0;--text2:#a89cc0;--text3:#5a5470;
+  --black:#000000;
+  --BRG:#1111111;
+  --fh:'Cinzel',serif;--fb:'Exo 2',sans-serif;--fm:'Share Tech Mono',monospace;
+}
+body{background:var(--bg);color:var(--text);font-family:var(--fb);font-size:13px;line-height:1.5;min-height:100vh}
+
+/* HEADER */
+.hdr{background:var(--bg2);border-bottom:1px solid var(--border2);padding:0 14px;display:flex;align-items:center;justify-content:space-between;height:54px;position:sticky;top:0;z-index:100}
+.hdr::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:.35}
+.brand{display:flex;align-items:center;gap:10px}
+.badge-num{background:var(--gold);color:#1a0f00;font-family:var(--fh);font-size:14px;font-weight:900;padding:2px 9px;letter-spacing:1px;white-space:nowrap}
+.brand-col{display:flex;flex-direction:column;gap:1px}
+.brand-name{font-family:var(--fh);font-size:14px;font-weight:700;color:var(--gold2);letter-spacing:1.5px;line-height:1.1}
+.brand-sub{font-family:var(--fm);font-size:9px;color:var(--text3);letter-spacing:1.5px}
+.hdr-right{display:flex;align-items:center;gap:8px}
+.admin-pill{font-family:var(--fm);font-size:9px;padding:3px 8px;border:1px solid;letter-spacing:1px}
+.admin-pill.locked{color:var(--gold);border-color:var(--text3)}
+.admin-pill.unlocked{color:var(--black);border-color:var(--gold);background:var(--goldbg)}
+.hdr-btn{font-family:var(--fh);font-size:10px;font-weight:600;letter-spacing:1px;padding:4px 11px;border:1px solid var(--border2);background:transparent;color:var(--gold);cursor:pointer;transition:all .2s}
+.hdr-btn:hover{border-color:var(--accent);color:var(--accent)}
+
+/* NAV */
+.nav{background:var(--bg2);border-bottom:1px solid var(--border);display:flex;overflow-x:auto;scrollbar-width:none}
+.nav::-webkit-scrollbar{display:none}
+.nav-tab{font-family:var(--fh);font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;padding:9px 12px;border:none;background:transparent;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;flex-shrink:0;transition:all .2s}
+.nav-tab:hover{color:var(--text2)}
+.nav-tab.active{color:var(--accent3);border-bottom-color:var(--accent)}
+.nav-tab.glocked{color:var(--text3)}.nav-tab.gunlocked{color:var(--gold)}
+
+/* PAGES */
+.page{display:none;padding:14px;min-height:calc(100vh - 88px);overflow-y:auto}
+.page.active{display:block}
+
+/* MODALS */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:200;align-items:center;justify-content:center;padding:14px}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-top:2px solid var(--gold);padding:26px 22px;width:100%;max-width:310px;text-align:center}
+.modal-title{font-family:var(--fh);font-size:14px;color:var(--gold2);letter-spacing:2px;margin-bottom:4px}
+.modal-sub{font-family:var(--fm);font-size:10px;color:var(--text3);letter-spacing:1.5px;margin-bottom:16px}
+.pin-input{background:var(--bg3);border:1px solid var(--border2);color:var(--text);font-family:var(--fm);font-size:20px;text-align:center;letter-spacing:6px;padding:9px;width:100%;outline:none;margin-bottom:4px}
+.pin-input:focus{border-color:var(--accent)}
+.pin-err{color:var(--red);font-family:var(--fm);font-size:11px;height:16px;margin:5px 0}
+.modal-row{display:flex;gap:8px;margin-top:8px}
+.btn-gold{flex:1;background:var(--gold);border:none;color:#1a0f00;font-family:var(--fh);font-size:11px;font-weight:700;letter-spacing:1.5px;padding:9px;cursor:pointer}
+.btn-gold:hover{background:var(--gold2)}
+.btn-ghost{flex:1;background:transparent;border:1px solid var(--border2);color:var(--text2);font-family:var(--fh);font-size:11px;padding:9px;cursor:pointer}
+
+/* SECTION */
+.sh{display:flex;align-items:flex-start;gap:10px;margin-bottom:16px}
+.sh-bar{width:3px;flex-shrink:0;align-self:stretch;min-height:28px}
+.sh-title{font-family:var(--fh);font-size:16px;font-weight:700;letter-spacing:2px;text-transform:uppercase}
+.sh-sub{font-family:var(--fm);font-size:9px;color:var(--text3);letter-spacing:1.5px;margin-top:2px}
+
+/* FORM ELEMENTS */
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.fl{display:flex;flex-direction:column;gap:4px}
+.fl.span2{grid-column:1/-1}
+.flabel{font-family:var(--fm);font-size:9px;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase}
+.finput,.fselect,.ftextarea{background:var(--bg3);border:1px solid var(--border);color:var(--text);font-family:var(--fb);font-size:13px;padding:8px 10px;outline:none;width:100%;transition:border-color .2s}
+.finput:focus,.fselect:focus{border-color:var(--accent2)}
+.fselect option{background:var(--bg3)}
+.ftextarea{resize:vertical;min-height:60px;font-size:12px}
+
+/* BANNERS */
+.ev-banner{display:flex;align-items:center;gap:10px;background:var(--bg3);border:1px solid var(--border2);border-left:3px solid var(--gold);padding:7px 12px;margin-bottom:14px;flex-wrap:wrap}
+.ev-label{font-family:var(--fm);font-size:9px;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;flex-shrink:0}
+.ev-val{font-family:var(--fm);font-size:12px;color:var(--gold2);letter-spacing:1px}
+.ev-none{font-family:var(--fm);font-size:11px;color:var(--red)}
+.success-banner{background:var(--greenbg);border:1px solid rgba(74,222,128,.4);color:var(--green);font-family:var(--fm);font-size:11px;padding:7px 12px;margin-bottom:12px;letter-spacing:1px}
+.api-banner{background:var();border:1px solid rgba(240,192,64,.25);color:var(--gold2);font-family:var(--fm);font-size:10px;padding:7px 11px;margin-bottom:12px;letter-spacing:1px}
+.fuel-banner{background:var(--orangebg);border:1px solid rgba(251,146,60,.3);color:var(--orange);font-family:var(--fm);font-size:10px;padding:7px 11px;margin-bottom:0;letter-spacing:1px}
+.info-banner{background:var(--bluebg);border:1px solid rgba(96,165,250,.3);color:var(--blue);font-family:var(--fm);font-size:10px;padding:7px 11px;margin-bottom:12px;letter-spacing:1px}
+
+/* RATINGS */
+.rating-block{background:var(--bg3);border:1px solid var(--border);border-left:3px solid var(--accent2);padding:12px;margin-bottom:14px}
+.rb-title{font-family:var(--fh);font-size:11px;color:var(--accent3);margin-bottom:10px;letter-spacing:2px;text-transform:uppercase}
+.rrow{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.rlabel{font-family:var(--fm);font-size:9px;color:var(--text3);width:115px;flex-shrink:0;letter-spacing:1px;text-transform:uppercase}
+.rslider{flex:1;accent-color:var(--accent2);cursor:pointer;min-width:0}
+.rval{font-family:var(--fm);font-size:12px;font-weight:700;color:var(--accent3);width:20px;text-align:right;flex-shrink:0}
+
+/* BUTTONS */
+.btn-primary{background:var(--accent2);border:none;color:#fff;font-family:var(--fh);font-size:12px;font-weight:700;letter-spacing:1.5px;padding:10px 24px;cursor:pointer;transition:background .2s;width:100%}
+.btn-primary:hover{background:var(--accent)}
+.btn-outline{background:transparent;border:1px solid var(--border2);color:var(--text2);font-family:var(--fh);font-size:10px;font-weight:600;letter-spacing:1px;padding:6px 12px;cursor:pointer;transition:all .2s}
+.btn-outline:hover{border-color:var(--accent);color:var(--accent)}
+.btn-danger{background:var(--redbg);border:1px solid rgba(255,107,107,.4);color:var(--red);font-family:var(--fh);font-size:10px;letter-spacing:1px;padding:6px 12px;cursor:pointer}
+.btn-sm-icon{background:transparent;border:1px solid rgba(255,107,107,.3);color:var(--red);font-family:var(--fm);font-size:10px;padding:2px 6px;cursor:pointer}
+
+/* TBA CONFIG */
+.tba-cfg{background:var(--bg3);border:1px solid var(--border);border-left:3px solid var(--gold);padding:12px;margin-bottom:14px}
+.tba-cfg-title{font-family:var(--fh);font-size:10px;color:var(--gold2);letter-spacing:2px;text-transform:uppercase;margin-bottom:9px}
+.tba-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:9px}
+.tba-actions{display:flex;gap:7px;flex-wrap:wrap}
+.tba-status{font-family:var(--fm);font-size:10px;color:var(--text3);margin-top:7px;letter-spacing:1px}
+.tba-help{font-size:10px;color:var(--text3);margin-top:6px;line-height:1.6}
+.tba-help a{color:var(--accent3)}
+
+/* TABS */
+.tabs{display:flex;border-bottom:1px solid var(--border2);margin-bottom:12px;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab-btn{font-family:var(--fh);font-size:10px;font-weight:600;letter-spacing:1.5px;padding:7px 12px;border:none;background:transparent;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap;flex-shrink:0}
+.tab-btn.active{color:var(--accent3);border-bottom-color:var(--accent)}
+
+/* TABLES */
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.tbl{width:100%;border-collapse:collapse;font-size:11px;min-width:400px}
+.tbl th{background:var(--bg3);font-family:var(--fm);font-size:9px;letter-spacing:1.5px;color:var(--accent3);text-transform:uppercase;padding:7px 8px;text-align:left;border-bottom:1px solid var(--border2);white-space:nowrap;cursor:pointer;user-select:none}
+.tbl th:hover{color:var(--gold2)}
+.tbl th.fc{color:var(--orange)}
+.tbl td{padding:6px 8px;border-bottom:1px solid var(--border);font-family:var(--fm);font-size:11px;color:var(--text2);white-space:nowrap}
+.tbl tr:hover td{background:rgba(168,124,255,.04)}
+.badge{font-family:var(--fm);font-size:10px;padding:2px 6px;letter-spacing:1px}
+.bp{background:rgba(168,124,255,.15);color:var(--accent3)}
+.bg2{background:var();color:var(--gold)}
+.bgr{background:var(--greenbg);color:var(--green)}
+.br{background:var(--redbg);color:var(--red)}
+.bb{background:var(--bluebg);color:var(--blue)}
+.bo{background:var(--orangebg);color:var(--orange)}
+.tbl-ctrl{display:flex;gap:7px;align-items:center;margin-bottom:10px;flex-wrap:wrap}
+.empty{text-align:center;padding:28px;color:var(--text3);font-family:var(--fm);font-size:11px;letter-spacing:1px}
+
+/* STRATEGY GRID */
+.strat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.scard{background:var(--bg3);border:1px solid var(--border);border-top:2px solid var(--accent2);padding:12px}
+.scard.gold-t{border-top-color:var(--gold)}.scard.full{grid-column:1/-1}
+.scard-title{font-family:var(--fh);font-size:11px;font-weight:700;color:var(--accent3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.scard-title.gt{color:var(--gold2)}
+.stat-row{display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid var(--border)}
+.stat-row:last-child{border:none}
+.stat-name{font-size:11px;color:var(--text2)}
+.stat-v{font-family:var(--fm);font-size:12px;font-weight:700;color:var(--accent3)}
+.rank-row{display:flex;align-items:center;gap:7px;padding:4px 0;border-bottom:1px solid var(--border)}
+.rank-row:last-child{border:none}
+.rank-n{font-family:var(--fm);font-size:10px;width:18px;flex-shrink:0}
+.rank-t{font-family:var(--fm);font-size:11px;color:var(--text);flex:1}
+.rank-s{font-family:var(--fm);font-size:11px;color:var(--accent3)}
+.rank-e{font-family:var(--fm);font-size:10px;color:var(--text3)}
+
+/* TEAM LOOKUP */
+.lookup-wrap{background:var(--bg3);border:1px solid var(--border);border-left:3px solid var(--accent2);padding:12px;margin-bottom:12px}
+.lookup-row{display:flex;gap:8px;align-items:center}
+.lookup-res{background:var(--bg4);border:1px solid var(--border2);padding:12px;margin-top:10px}
+.lu-header{display:flex;align-items:center;gap:10px;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.lu-num{font-family:var(--fh);font-size:18px;font-weight:900;color:var(--gold2)}
+.lu-meta{font-family:var(--fm);font-size:10px;color:var(--text3);letter-spacing:1px}
+.lu-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-bottom:10px}
+.lu-stat{background:var(--bg3);padding:7px 9px}
+.lu-stat-label{font-family:var(--fm);font-size:9px;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:2px}
+.lu-stat-val{font-family:var(--fm);font-size:13px;font-weight:700;color:var(--accent3)}
+.lu-stat.fuel .lu-stat-val{color:var(--orange)}
+.lu-stat.good .lu-stat-val{color:var(--green)}
+.lu-stat.warn .lu-stat-val{color:var(--red)}
+.lu-match-title{font-family:var(--fm);font-size:9px;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:5px;margin-top:8px}
+.lu-match-row{display:flex;align-items:center;gap:7px;padding:4px 0;border-bottom:1px solid var(--border);font-family:var(--fm);font-size:10px}
+.lu-match-row:last-child{border:none}
+
+/* PREDICTOR */
+.pred-wrap{display:flex;gap:10px;margin-bottom:10px;flex-wrap:wrap;align-items:flex-end}
+.pred-al{display:flex;flex-direction:column;gap:5px}
+.pred-al-label{font-family:var(--fh);font-size:10px;letter-spacing:2px;text-transform:uppercase}
+.pred-al.red .pred-al-label{color:var(--red)}
+.pred-al.blue .pred-al-label{color:var(--blue)}
+.pred-teams-row{display:flex;gap:4px}
+.pred-tinput{width:65px;background:var(--bg4);border:1px solid var(--border);color:var(--text);font-family:var(--fm);font-size:11px;padding:5px 6px;outline:none}
+.pred-tinput:focus{border-color:var(--accent2)}
+.pred-res{background:var(--bg4);border:1px solid var(--border2);padding:12px;margin-top:4px}
+.pred-rows{display:flex;gap:5px;margin-bottom:8px;flex-wrap:wrap;align-items:center}
+.tc{font-family:var(--fm);font-size:10px;padding:2px 8px;border:1px solid}
+.tc.red{border-color:var(--red);color:var(--red);background:var(--redbg)}
+.tc.blue{border-color:var(--blue);color:var(--blue);background:var(--bluebg)}
+.pred-pcts{display:flex;justify-content:space-between;font-family:var(--fm);font-size:12px;font-weight:700;margin-bottom:5px}
+.pred-bar{height:7px;background:var(--bg);margin:5px 0;border-radius:2px;overflow:hidden;display:flex}
+.pred-bar-r{background:var(--red);transition:width .5s}
+.pred-bar-b{background:var(--blue);transition:width .5s}
+.pred-winner{font-family:var(--fh);font-size:13px;letter-spacing:1.5px}
+.pred-conf{font-family:var(--fm);font-size:10px;color:var(--text3);margin-top:3px;letter-spacing:1px}
+
+/* QUALS PREDICTOR */
+.match-row{display:flex;align-items:center;gap:8px;padding:7px 10px;border-bottom:1px solid var(--border);flex-wrap:wrap}
+.match-row:last-child{border:none}
+.match-row.played{background:rgba(74,222,128,.03)}
+.match-row.predicted{background:rgba(96,165,250,.02)}
+.match-num{font-family:var(--fm);font-size:10px;color:var(--text3);width:24px;flex-shrink:0}
+.match-teams{display:flex;gap:4px;flex:1;min-width:0;flex-wrap:wrap}
+.mt{font-family:var(--fm);font-size:10px;padding:2px 7px;border:1px solid;white-space:nowrap}
+.mt.r{border-color:rgba(255,107,107,.4);color:var(--red);background:var(--redbg)}
+.mt.b{border-color:rgba(96,165,250,.4);color:var(--blue);background:var(--bluebg)}
+.mt.winner{font-weight:700;border-width:2px}
+.match-score{font-family:var(--fm);font-size:11px;font-weight:700;white-space:nowrap}
+.match-score .rs{color:var(--red)}
+.match-score .bs{color:var(--blue)}
+.match-score .sep{color:var(--text3);margin:0 3px}
+.played-badge{font-family:var(--fm);font-size:9px;padding:1px 6px;background:var(--greenbg);border:1px solid rgba(74,222,128,.3);color:var(--green);letter-spacing:1px}
+.pred-badge{font-family:var(--fm);font-size:9px;padding:1px 6px;background:var(--bluebg);border:1px solid rgba(96,165,250,.3);color:var(--blue);letter-spacing:1px}
+.match-prob{font-family:var(--fm);font-size:10px;color:var(--text3);white-space:nowrap}
+
+/* STANDINGS TABLE */
+.standings-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+
+/* BRACKET */
+.bracket-wrap{overflow-x:auto;padding-bottom:8px}
+.bracket{display:flex;gap:20px;align-items:flex-start;min-width:600px;padding:4px}
+.bracket-col{display:flex;flex-direction:column;gap:10px;flex-shrink:0}
+.bracket-col-title{font-family:var(--fm);font-size:9px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;text-align:center;margin-bottom:6px;border-bottom:1px solid var(--border);padding-bottom:4px}
+.b-match{background:var(--bg3);border:1px solid var(--border);padding:8px 10px;min-width:160px;position:relative}
+.b-match.winners-side{border-left:2px solid var(--green)}
+.b-match.losers-side{border-left:2px solid var(--red)}
+.b-match.finals-match{border-left:2px solid var(--gold)}
+.b-team{display:flex;align-items:center;justify-content:space-between;padding:3px 0;font-family:var(--fm);font-size:11px}
+.b-team-name{color:var(--text2)}
+.b-team-name.winner-team{color:var(--green);font-weight:700}
+.b-team-name.tbd{color:var(--text3);font-style:italic}
+.b-score{font-weight:700}
+.b-score.won{color:var(--green)}
+.b-score.lost{color:var(--red)}
+.b-match-label{font-family:var(--fm);font-size:8px;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px}
+.b-prob{font-family:var(--fm);font-size:9px;color:var(--text3);margin-top:4px;border-top:1px solid var(--border);padding-top:4px}
+.b-prob span{color:var(--accent3)}
+.b-eliminated{position:absolute;top:4px;right:6px;font-family:var(--fm);font-size:8px;color:var(--red);letter-spacing:1px}
+
+/* FIREBASE */
+.fb-modal{background:var(--bg2);border:1px solid var(--border2);border-top:2px solid var(--accent2);padding:22px;width:100%;max-width:420px;text-align:left}
+.fb-modal-title{font-family:var(--fh);font-size:13px;color:var(--accent3);letter-spacing:2px;margin-bottom:10px}
+.fb-field{margin-bottom:9px}
+.fb-label{font-family:var(--fm);font-size:9px;color:var(--text3);letter-spacing:1px;text-transform:uppercase;margin-bottom:3px}
+.fb-input{width:100%;background:var(--bg3);border:1px solid var(--border);color:var(--text);font-family:var(--fm);font-size:11px;padding:6px 9px;outline:none}
+.fb-input:focus{border-color:var(--accent2)}
+.fb-note{font-size:10px;color:var(--text3);margin-top:9px;line-height:1.7}
+.fb-note a{color:var(--accent3)}
+.fb-note code{background:var(--bg3);padding:1px 4px;font-size:9px;color:var(--accent3)}
+
+/* RESPONSIVE */
+@media(max-width:600px){
+  .strat-grid{grid-template-columns:1fr}.scard.full{grid-column:1}
+  .tba-grid{grid-template-columns:1fr}.fg{grid-template-columns:1fr}.fl.span2{grid-column:1}
+  .pred-wrap{flex-direction:column;align-items:flex-start}
+  .lu-grid{grid-template-columns:1fr 1fr}.brand-sub{display:none}
+  .standings-grid{grid-template-columns:1fr}
+}
+@media(max-width:400px){.hdr{padding:0 10px}.page{padding:10px}.badge-num{font-size:12px;padding:2px 7px}.brand-name{font-size:12px}}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="brand">
+    <span class="badge-num">3206</span>
+    <div class="brand-col">
+      <span class="brand-name">
+        <svg style="display:inline-block;width:15px;height:10px;vertical-align:middle;margin-right:4px" viewBox="0 0 22 16" fill="none">
+          <path d="M1 14h20M1 14L4 4l5 5 2-7 2 7 5-5 3 10" stroke="#a87cff" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>
+          <circle cx="2.5" cy="3.5" r="1.5" fill="#a87cff"/><circle cx="11" cy="1.5" r="1.5" fill="#a87cff"/><circle cx="19.5" cy="3.5" r="1.5" fill="#a87cff"/>
+        </svg>Royal T-Wrecks
+      </span>
+      <span class="brand-sub">FRC · Team 3206 · Rebuilt 2026</span>
+    </div>
+  </div>
+  <div class="hdr-right">
+    <span class="admin-pill locked" id="admin-pill">SCOUTER</span>
+    <button class="hdr-btn" id="admin-btn" onclick="openAdminModal()">Login</button>
+  </div>
+</div>
+
+<div class="nav">
+  <button class="nav-tab active" onclick="gotoPage('scout',this)">Scout</button>
+  <button class="nav-tab glocked" onclick="gotoPage('database',this)">Database</button>
+  <button class="nav-tab glocked" onclick="gotoPage('strategy',this)">Strategy</button>
+  <button class="nav-tab glocked" onclick="gotoPage('quals',this)">Quals Predictor</button>
+  <button class="nav-tab glocked" onclick="gotoPage('bracket',this)">Bracket</button>
+</div>
+
+<!-- ADMIN MODAL -->
+<div class="overlay" id="admin-overlay">
+  <div class="modal">
+    <div class="modal-title">Royal Access</div>
+    <div class="modal-sub">ENTER ADMIN PIN</div>
+    <input class="pin-input" type="password" id="pin-input" maxlength="10" placeholder="••••••" onkeydown="if(event.key==='Enter')tryPin()">
+    <div class="pin-err" id="pin-err"></div>
+    <div class="modal-row">
+      <button class="btn-gold" onclick="tryPin()">Unlock</button>
+      <button class="btn-ghost" onclick="closeAdminModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- FIREBASE MODAL -->
+<div class="overlay" id="fb-overlay">
+  <div class="fb-modal">
+    <div class="fb-modal-title">Firebase Configuration</div>
+    <div class="info-banner">Enables live shared database across all scout devices.</div>
+    <div class="fb-field"><div class="fb-label">Database URL</div><input class="fb-input" id="fb-url" Value="https://scouting-application-295c8-default-rtdb.firebaseio.com" readonly></div>
+    <div class="fb-field"><div class="fb-label">API Key</div><input class="fb-input" id="fb-apikey" Value="AIzaSyB4f3uybkoPX6Jls8TB" readonly></div>
+    <div class="fb-field"><div class="fb-label">Project ID</div><input class="fb-input" id="fb-projectid" value="scouting-application-295c8" readonly></div>
+    <div class="modal-row" style="margin-top:12px">
+      <body onload ="saveFBConfig()" </body>
+      <button class="btn-ghost" onclick="closeFBModal()">Cancel</button>
+    </div>
+    <div class="fb-note">
+      1. <a href="https://console.firebase.google.com" target="_blank">console.firebase.google.com</a> → Realtime Database → test mode<br>
+      2. Project Settings → Apps → Add web app → copy <code>databaseURL</code>, <code>apiKey</code>, <code>projectId</code>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE 1: SCOUT -->
+<div class="page active" id="page-scout">
+  <div class="sh"><div class="sh-bar" style="background:var(--gold)"></div><div><div class="sh-title" style="color:var(--gold2)">Match Scouting</div><div class="sh-sub">// Subjective data entry — all scouts</div></div></div>
+  <div id="scout-ok" class="success-banner" style="display:none">✓ Entry recorded</div>
+  <div class="ev-banner"><span class="ev-label">Active Event:</span><span id="scout-ev-display" class="ev-none">Not set</span></div>
+  <div class="fg">
+    <div class="fl"><label class="flabel">Match #</label><input class="finput" id="f-match" type="number" min="1" placeholder="1"></div>
+    <div class="fl"><label class="flabel">Team #</label><input class="finput" id="f-team" type="number" placeholder="3206"></div>
+    <div class="fl"><label class="flabel">Scout Name</label><input class="finput" id="f-scout" placeholder="Your name"></div>
+    <div class="fl"><label class="flabel">Alliance</label><select class="fselect" id="f-alliance"><option value="Red">Red Alliance</option><option value="Blue">Blue Alliance</option></select></div>
+    <div class="fl"><label class="flabel">Start Position</label><select class="fselect" id="f-startpos"><option>Center</option><option>Left</option><option>Right</option><option>Unknown</option></select></div>
+    <div class="fl"><label class="flabel">Auto Strategy</label><select class="fselect" id="f-auto"><option>Full auto routine</option><option>Partial auto</option><option>Mobility only</option><option>Stayed in place</option><option>No auto</option></select></div>
+    <div class="fl"><label class="flabel">Endgame</label><select class="fselect" id="f-endgame"><option>Climbed (High)</option><option>Climbed (Low)</option><option>Parked</option><option>Attempted climb</option><option>No endgame</option></select></div>
+    <div class="fl"><label class="flabel">Fouls</label><input class="finput" id="f-fouls" type="number" min="0" value="0"></div>
+    <div class="fl"><label class="flabel">Defense</label><select class="fselect" id="f-defense"><option value="None">None</option><option value="Light">Light</option><option value="Heavy">Heavy</option></select></div>
+    <div class="fl span2"><label class="flabel">Notes</label><textarea class="ftextarea" id="f-notes" placeholder="Robot behavior, highlights, issues..."></textarea></div>
+  </div>
+  <div class="rating-block">
+    <div class="rb-title">Performance Ratings (1–10)</div>
+    <div id="ratings-container"></div>
+  </div>
+  <button class="btn-primary" onclick="submitScout()">Submit Scouting Entry</button>
+</div>
+
+<!-- PAGE 2: DATABASE -->
+<div class="page" id="page-database">
+  <div class="sh"><div class="sh-bar" style="background:var(--gold)"></div><div><div class="sh-title" style="color:var(--gold2)">Database</div><div class="sh-sub">// Admin only</div></div></div>
+  <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+    <span style="font-family:var(--fm);font-size:10px;color:var(--text3);align-self:center" id="fb-status-text">Not connected</span>
+  </div>
+  <div class="tba-cfg">
+    <div class="tba-cfg-title">The Blue Alliance API — Rebuilt 2026</div>
+    <div class="tba-grid">
+      <div><div class="fb-label" style="margin-bottom:3px">Read API Key</div><input class="fb-input" id="tba-key" type="text" placeholder="UJMthFfmu56n4MFGq1gFYhfB1vCgVPI6YbkUE2yrBFtUndjBWzWeXmtEKuqf7ayq" readonly></div>
+      <div><div class="fb-label" style="margin-bottom:3px">Event Key</div><input class="fb-input" id="tba-event" type="text" Value=" 2026mnum" readonly oninput="syncEvDisplay()"></div>
+    </div>
+    <div class="tba-actions">
+      <button class="btn-outline" onclick="saveTBACfg()">Save Config</button>
+      <button class="btn-outline" onclick="fetchTBA()">Fetch TBA Data</button>
+    </div>
+    <div class="tba-status" id="tba-status">No API key configured</div>
+    <div class="fuel-banner" style="margin-top:8px">🔥 Hub Fuel via <code style="background:rgba(0,0,0,.3);padding:1px 4px">hubScore.autoCount</code> · <code style="background:rgba(0,0,0,.3);padding:1px 4px">hubScore.teleopCount</code> · <code style="background:rgba(0,0,0,.3);padding:1px 4px">hubScore.totalCount</code></div>
+    <div class="tba-help">Free key: <a href="https://www.thebluealliance.com/account" target="_blank">thebluealliance.com/account</a></div>
+  </div>
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('scouted',this)">Scouted</button>
+    <button class="tab-btn" onclick="switchTab('tba',this)">TBA Data</button>
+  </div>
+  <div id="tab-scouted">
+    <div class="tbl-ctrl">
+      <input class="finput" style="width:130px;padding:5px 8px;font-size:11px" placeholder="Filter..." id="tbl-filter" oninput="renderTable()">
+      <button class="btn-outline" onclick="exportCSV()">Export CSV</button>
+      <button class="btn-danger" onclick="clearData()">Clear All</button>
+      <span style="font-family:var(--fm);font-size:10px;color:var(--text3)" id="rec-count"></span>
+    </div>
+    <div class="tbl-wrap">
+      <table class="tbl" id="scout-tbl">
+        <thead><tr>
+          <th onclick="srt('match')">Match</th><th onclick="srt('team')">Team</th>
+          <th onclick="srt('alliance')">Alliance</th><th onclick="srt('driverSkill')">Driver</th>
+          <th onclick="srt('accuracy')">Acc.</th><th onclick="srt('speed')">Speed</th>
+          <th onclick="srt('defense')">Def.</th><th onclick="srt('consistency')">Con.</th>
+          <th onclick="srt('autoScore')">Auto</th><th onclick="srt('avgRating')">Avg</th>
+          <th onclick="srt('endgame')">Endgame</th><th onclick="srt('fouls')">Fouls</th>
+          <th>Scout</th><th>Notes</th><th></th>
+        </tr></thead>
+        <tbody id="scout-tbody"></tbody>
+      </table>
+    </div>
+    <div class="empty" id="tbl-empty" style="display:none">No scouting data yet</div>
+  </div>
+  <div id="tab-tba" style="display:none">
+    <div class="api-banner">Objective data from TBA — Hub Fuel via hubScore nested object (Rebuilt 2026)</div>
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead><tr>
+          <th>Team</th><th>Rank</th><th>OPR</th><th>DPR</th><th>CCWM</th><th>W-L-T</th><th>Avg Score</th>
+          <th class="fc" style="border-left:2px solid rgba(251,146,60,.3)">Auto⛽</th>
+          <th class="fc">Teleop⛽</th><th class="fc">Total⛽</th>
+        </tr></thead>
+        <tbody id="tba-tbody"><tr><td colspan="10" style="text-align:center;color:var(--text3);padding:18px;font-family:var(--fm);font-size:11px">No TBA data — click Fetch TBA Data</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE 3: STRATEGY -->
+<div class="page" id="page-strategy">
+  <div class="sh"><div class="sh-bar" style="background:var(--accent2)"></div><div><div class="sh-title" style="color:var(--accent3)">Strategy Center</div><div class="sh-sub">// Admin only</div></div></div>
+  <div class="strat-grid">
+    <div class="scard full" style="border-top-color:var(--gold)">
+      <div class="scard-title gt">Team Lookup</div>
+      <div class="lookup-wrap">
+        <div class="lookup-row">
+          <input class="finput" id="lookup-input" type="number" placeholder="Enter team number..." style="flex:1">
+          <button class="btn-outline" onclick="lookupTeam()">Look Up</button>
+        </div>
+      </div>
+      <div id="lookup-result" style="display:none"></div>
+    </div>
+    <div class="scard">
+      <div class="scard-title">Top Teams (Composite)</div>
+      <div id="strat-top"><div class="empty" style="padding:14px">No data yet</div></div>
+    </div>
+    <div class="scard gold-t">
+      <div class="scard-title gt">Field Summary</div>
+      <div id="strat-summary"><div class="empty" style="padding:14px">No data yet</div></div>
+    </div>
+    <div class="scard full">
+      <div class="scard-title">Match Predictor</div>
+      <div class="pred-wrap">
+        <div class="pred-al red"><span class="pred-al-label">Red</span>
+          <div class="pred-teams-row"><input class="pred-tinput" id="pr1" placeholder="T1"><input class="pred-tinput" id="pr2" placeholder="T2"><input class="pred-tinput" id="pr3" placeholder="T3"></div>
+        </div>
+        <div style="font-family:var(--fh);font-size:12px;color:var(--text3);padding-bottom:3px">vs</div>
+        <div class="pred-al blue"><span class="pred-al-label">Blue</span>
+          <div class="pred-teams-row"><input class="pred-tinput" id="pb1" placeholder="T1"><input class="pred-tinput" id="pb2" placeholder="T2"><input class="pred-tinput" id="pb3" placeholder="T3"></div>
+        </div>
+        <button class="btn-outline" style="align-self:flex-end" onclick="predict()">Predict</button>
+      </div>
+      <div id="pred-result" style="display:none"></div>
+    </div>
+    <div class="scard full">
+      <div class="scard-title">Alliance Pick List</div>
+      <p style="font-size:10px;color:var(--text3);font-family:var(--fm);margin-bottom:8px;letter-spacing:1px">Composite = scout avg (60%) + normalized total fuel (40%) when TBA available</p>
+      <div id="strat-picklist"><div class="empty" style="padding:14px">Scout more teams first</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE 4: QUALS PREDICTOR -->
+<div class="page" id="page-quals">
+  <div class="sh"><div class="sh-bar" style="background:var(--blue)"></div><div><div class="sh-title" style="color:var(--blue)">Quals Predictor</div><div class="sh-sub">// Real scores + OPR simulation — admin only</div></div></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+    <div>
+      <div class="fb-label" style="margin-bottom:4px">Import Match Schedule CSV</div>
+      <input type="file" id="csv-upload" accept=".csv" onchange="loadCSV(event)" style="font-family:var(--fm);font-size:10px;color:var(--text2);width:100%">
+    </div>
+    <div>
+      <div class="fb-label" style="margin-bottom:4px">Or fetch from TBA</div>
+      <button class="btn-outline" style="width:100%" onclick="fetchQualsFromTBA()">Fetch Schedule from TBA</button>
+    </div>
+  </div>
+  <div id="quals-status" class="info-banner" style="display:none"></div>
+  <div class="standings-grid">
+    <div class="scard" style="border-top-color:var(--blue)">
+      <div class="scard-title" style="color:var(--blue)">Projected Standings</div>
+      <div id="quals-standings"><div class="empty" style="padding:14px">Load schedule first</div></div>
+    </div>
+    <div class="scard" style="border-top-color:var(--accent2)">
+      <div class="scard-title">OPR Leaderboard</div>
+      <div id="opr-board"><div class="empty" style="padding:14px">Fetch TBA data first</div></div>
+    </div>
+  </div>
+  <div class="scard full" style="margin-top:0;border-top:2px solid var(--blue);background:var(--bg3);border:1px solid var(--border);padding:12px">
+    <div class="scard-title" style="color:var(--blue)">Match List — Actual Results & Predictions</div>
+    <div class="tbl-ctrl">
+      <select class="fselect" style="width:auto;padding:5px 8px;font-size:11px" id="quals-filter">
+        <option value="all">All Matches</option>
+        <option value="played">Played Only</option>
+        <option value="unplayed">Unplayed Only</option>
+      </select>
+      <input class="finput" style="width:110px;padding:5px 8px;font-size:11px" placeholder="Filter team..." id="quals-team-filter">
+      <button class="btn-outline" onclick="renderQuals()">Refresh</button>
+    </div>
+    <div id="quals-match-list"><div class="empty">Load a schedule CSV or fetch from TBA</div></div>
+  </div>
+</div>
+
+<!-- PAGE 5: BRACKET -->
+<div class="page" id="page-bracket">
+  <div class="sh"><div class="sh-bar" style="background:var(--gold)"></div><div><div class="sh-title" style="color:var(--gold2)">Double Elimination Bracket</div><div class="sh-sub">// Live bracket with OPR win probabilities — admin only</div></div></div>
+  <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center">
+    <button class="btn-outline" onclick="fetchBracket()">Fetch Bracket from TBA</button>
+    <span style="font-family:var(--fm);font-size:10px;color:var(--text3)" id="bracket-status">Load TBA data first, then fetch bracket</span>
+  </div>
+  <div id="bracket-container"><div class="empty">Click "Fetch Bracket from TBA" to load the elimination bracket</div></div>
+</div>
+
+<script>
+const ADMIN_PIN="3206";
+let isAdmin=false,pendingPage=null,pendingBtn=null;
+let scoutData={},tbaData={},tbaKey='',eventKey='';
+let sortKey='match',sortAsc=true;
+let matchSchedule=[];// [{key,match,redTeams,blueTeams,redScore,blueScore,played}]
+let bracketMatches=[];
+
+const RATINGS=[
+  {id:'driverSkill',label:'Driver Skill'},{id:'accuracy',label:'Scoring Accuracy'},
+  {id:'speed',label:'Robot Speed'},{id:'defense',label:'Defense Quality'},
+  {id:'consistency',label:'Consistency'},{id:'autoScore',label:'Auto Performance'},
+  {id:'adaptability',label:'Adaptability'},{id:'coopPlay',label:'Co-op / Teamwork'},
+];
+
+// ── FIREBASE ──
+async function connectFirebase(cfg){
+  try{
+    const{initializeApp,getApps}=await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js');
+    const{getDatabase,ref,onValue,push,set,remove}=await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js');
+    const app=getApps().find(a=>a.name==='twrecks')||initializeApp({apiKey:cfg.apiKey,databaseURL:cfg.databaseURL,projectId:cfg.projectId},'twrecks');
+    const fbDB=getDatabase(app);
+    window._fbRef=ref(fbDB,'twrecks3206/scoutData');
+    window._fbPush=push;window._fbSet=set;window._fbRemove=remove;
+    window._fbRefFn=(path)=>ref(fbDB,path);
+    document.getElementById('fb-status-text').textContent='✓ Firebase connected';
+    onValue(window._fbRef,snap=>{
+      scoutData={};const val=snap.val();if(val)scoutData=val;
+      if(document.getElementById('page-database').classList.contains('active'))renderTable();
+      if(document.getElementById('page-strategy').classList.contains('active'))renderStrategy();
+    });
+  }catch(e){document.getElementById('fb-status-text').textContent='Firebase error: '+e.message}
+}
+
+function init(){
+  try{const c=localStorage.getItem('twrecks_fbcfg');if(c){const cfg=JSON.parse(c);document.getElementById('fb-url').value=cfg.databaseURL||'';document.getElementById('fb-apikey').value=cfg.apiKey||'';document.getElementById('fb-projectid').value=cfg.projectId||'';connectFirebase(cfg)}}catch{}
+  try{const k=localStorage.getItem('twrecks_tbakey');if(k){tbaKey=k;document.getElementById('tba-key').value=k}}catch{}
+  try{const ev=localStorage.getItem('twrecks_eventkey');if(ev){eventKey=ev;document.getElementById('tba-event').value=ev}}catch{}
+  try{const t=localStorage.getItem('twrecks_tba');if(t)tbaData=JSON.parse(t)}catch{}
+  try{const s=localStorage.getItem('twrecks_scout_local');if(s)scoutData=JSON.parse(s)}catch{}
+  try{const m=localStorage.getItem('twrecks_schedule');if(m)matchSchedule=JSON.parse(m)}catch{}
+  syncEvDisplay();buildRatings();
+  if(Object.keys(tbaData).length)renderTBATable();
+  if(tbaKey)document.getElementById('tba-status').textContent='✓ TBA key loaded';
+}
+
+function buildRatings(){
+  document.getElementById('ratings-container').innerHTML=RATINGS.map(r=>`
+    <div class="rrow"><span class="rlabel">${r.label}</span>
+    <input class="rslider" type="range" min="1" max="10" value="5" id="r-${r.id}" oninput="document.getElementById('rv-${r.id}').textContent=this.value">
+    <span class="rval" id="rv-${r.id}">5</span></div>`).join('');
+}
+
+// ── NAV ──
+function gotoPage(page,btn){
+  if((page==='database'||page==='strategy'||page==='quals'||page==='bracket')&&!isAdmin){pendingPage=page;pendingBtn=btn;openAdminModal();return}
+  activatePage(page,btn);
+}
+window.gotoPage=gotoPage;
+function activatePage(page,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');btn.classList.add('active');
+  if(page==='database'){renderTable();renderTBATable()}
+  if(page==='strategy')renderStrategy();
+  if(page==='quals')renderQuals();
+  if(page==='bracket')renderBracket();
+}
+
+// ── ADMIN ──
+function openAdminModal(){document.getElementById('pin-input').value='';document.getElementById('pin-err').textContent='';document.getElementById('admin-overlay').style.display='flex';setTimeout(()=>document.getElementById('pin-input').focus(),50)}
+function closeAdminModal(){document.getElementById('admin-overlay').style.display='none';pendingPage=null;pendingBtn=null}
+window.openAdminModal=openAdminModal;window.closeAdminModal=closeAdminModal;
+function tryPin(){
+  if(document.getElementById('pin-input').value===ADMIN_PIN){
+    isAdmin=true;document.getElementById('admin-overlay').style.display='none';
+    document.getElementById('admin-pill').textContent='ADMIN';document.getElementById('admin-pill').className='admin-pill unlocked';
+    document.getElementById('admin-btn').textContent='Lock';document.getElementById('admin-btn').onclick=lockAdmin;
+    document.querySelectorAll('.glocked').forEach(t=>t.classList.replace('glocked','gunlocked'));
+    if(pendingPage&&pendingBtn){activatePage(pendingPage,pendingBtn);pendingPage=null;pendingBtn=null}
+  }else{document.getElementById('pin-err').textContent='Incorrect PIN';document.getElementById('pin-input').value='';document.getElementById('pin-input').focus()}
+}
+window.tryPin=tryPin;
+function lockAdmin(){
+  isAdmin=false;document.getElementById('admin-pill').textContent='SCOUTER';document.getElementById('admin-pill').className='admin-pill locked';
+  document.getElementById('admin-btn').textContent='Login';document.getElementById('admin-btn').onclick=openAdminModal;
+  document.querySelectorAll('.gunlocked').forEach(t=>t.classList.replace('gunlocked','glocked'));
+  document.querySelectorAll('.nav-tab')[0].click();
+}
+window.lockAdmin=lockAdmin;
+function openFBModal(){document.getElementById('fb-overlay').style.display='flex'}
+function closeFBModal(){document.getElementById('fb-overlay').style.display='none'}
+window.openFBModal=openFBModal;window.closeFBModal=closeFBModal;
+function saveFBConfig(){
+  const cfg={databaseURL:document.getElementById('fb-url').value.trim(),apiKey:document.getElementById('fb-apikey').value.trim(),projectId:document.getElementById('fb-projectid').value.trim()};
+  if(!cfg.databaseURL||!cfg.apiKey){alert('Fill in Database URL and API Key.');return}
+  localStorage.setItem('twrecks_fbcfg',JSON.stringify(cfg));connectFirebase(cfg);closeFBModal();
+}
+window.saveFBConfig=saveFBConfig;
+
+// ── TBA ──
+function syncEvDisplay(){
+  const val=(document.getElementById('tba-event')?.value||'').trim()||eventKey;
+  const d=document.getElementById('scout-ev-display');
+  if(val){d.className='ev-val';d.textContent=val.toUpperCase()}else{d.className='ev-none';d.textContent='Not set'}
+}
+window.syncEvDisplay=syncEvDisplay;
+function saveTBACfg(){
+  tbaKey=document.getElementById('tba-key').value.trim();eventKey=document.getElementById('tba-event').value.trim();
+  if(!tbaKey){alert('Enter a TBA API key.');return}
+  localStorage.setItem('twrecks_tbakey',tbaKey);localStorage.setItem('twrecks_eventkey',eventKey);
+  document.getElementById('tba-status').textContent='✓ Saved'+(eventKey?' — Event: '+eventKey.toUpperCase():'');
+  syncEvDisplay();
+}
+window.saveTBACfg=saveTBACfg;
+
+async function fetchTBA(){
+  if(!tbaKey){alert('Save a TBA key first.');return}
+  const ev=document.getElementById('tba-event').value.trim()||eventKey;
+  if(!ev){alert('Enter an event key.');return}
+  const st=document.getElementById('tba-status');st.textContent='Fetching '+ev+'...';
+  try{
+    const h={'X-TBA-Auth-Key':tbaKey};
+    const[rr,or,mr]=await Promise.all([
+      fetch(`https://www.thebluealliance.com/api/v3/event/${ev}/rankings`,{headers:h}),
+      fetch(`https://www.thebluealliance.com/api/v3/event/${ev}/oprs`,{headers:h}),
+      fetch(`https://www.thebluealliance.com/api/v3/event/${ev}/matches`,{headers:h})
+    ]);
+    const rj=await rr.json(),oj=await or.json(),mj=await mr.json();
+    const nd={};
+    if(rj.rankings)rj.rankings.forEach(r=>{
+      const tn=r.team_key.replace('frc','');nd[tn]=nd[tn]||{};
+      nd[tn].rank=r.rank;nd[tn].wins=r.record?.wins||0;nd[tn].losses=r.record?.losses||0;nd[tn].ties=r.record?.ties||0;nd[tn].avgScore=r.sort_orders?.[0];
+    });
+    if(oj.oprs)Object.entries(oj.oprs).forEach(([k,v])=>{const tn=k.replace('frc','');nd[tn]=nd[tn]||{};nd[tn].opr=v});
+    if(oj.dprs)Object.entries(oj.dprs).forEach(([k,v])=>{const tn=k.replace('frc','');if(nd[tn])nd[tn].dpr=v});
+    if(oj.ccwms)Object.entries(oj.ccwms).forEach(([k,v])=>{const tn=k.replace('frc','');if(nd[tn])nd[tn].ccwm=v});
+
+    // Hub Fuel — confirmed field: hubScore.autoCount / teleopCount / totalCount
+    const fuelAccum={};
+    const scoreAccum={};// for avg score per team
+    const foulAccum={};
+    if(Array.isArray(mj)){
+      mj.forEach(match=>{
+        if(match.comp_level!=='qm')return;// quals only for per-team stats
+        const sb=match.score_breakdown;if(!sb)return;
+        ['red','blue'].forEach(color=>{
+          const alliance=match.alliances?.[color];const bd=sb[color];
+          if(!alliance||!bd)return;
+          const hs=bd.hubScore;
+          alliance.team_keys.forEach(tk=>{
+            const tn=tk.replace('frc','');
+            if(!fuelAccum[tn])fuelAccum[tn]={auto:[],teleop:[],total:[]};
+            if(!scoreAccum[tn])scoreAccum[tn]=[];
+            if(!foulAccum[tn])foulAccum[tn]=[];
+            if(hs){
+              if(hs.autoCount!=null)fuelAccum[tn].auto.push(hs.autoCount);
+              if(hs.teleopCount!=null)fuelAccum[tn].teleop.push(hs.teleopCount);
+              if(hs.totalCount!=null)fuelAccum[tn].total.push(hs.totalCount);
+            }
+            if(bd.totalPoints!=null)scoreAccum[tn].push(bd.totalPoints);
+            const fouls=(bd.foulPoints||0);
+            foulAccum[tn].push(fouls);
+          });
+        });
+      });
+    }
+    Object.entries(fuelAccum).forEach(([tn,f])=>{
+      nd[tn]=nd[tn]||{};
+      nd[tn].avgAutoFuel=f.auto.length?parseFloat((f.auto.reduce((s,v)=>s+v,0)/f.auto.length).toFixed(1)):null;
+      nd[tn].avgTeleopFuel=f.teleop.length?parseFloat((f.teleop.reduce((s,v)=>s+v,0)/f.teleop.length).toFixed(1)):null;
+      nd[tn].avgTotalFuel=f.total.length?parseFloat((f.total.reduce((s,v)=>s+v,0)/f.total.length).toFixed(1)):null;
+    });
+    Object.entries(scoreAccum).forEach(([tn,a])=>{nd[tn]=nd[tn]||{};nd[tn].avgAllianceScore=a.length?parseFloat((a.reduce((s,v)=>s+v,0)/a.length).toFixed(1)):null});
+    Object.entries(foulAccum).forEach(([tn,a])=>{nd[tn]=nd[tn]||{};nd[tn].avgFoulsAgainst=a.length?parseFloat((a.reduce((s,v)=>s+v,0)/a.length).toFixed(1)):null});
+
+    // Store bracket matches too
+    if(Array.isArray(mj)){
+      bracketMatches=mj.filter(m=>m.comp_level==='sf'||m.comp_level==='f');
+      localStorage.setItem('twrecks_bracket',JSON.stringify(bracketMatches));
+    }
+
+    tbaData=nd;localStorage.setItem('twrecks_tba',JSON.stringify(tbaData));
+    const fuelTeams=Object.values(nd).filter(d=>d.avgTotalFuel!=null).length;
+    st.textContent=`✓ Loaded ${Object.keys(nd).length} teams from ${ev.toUpperCase()} — fuel data for ${fuelTeams} teams`;
+    renderTBATable();
+    if(document.getElementById('page-strategy').classList.contains('active'))renderStrategy();
+    if(document.getElementById('page-quals').classList.contains('active'))renderQuals();
+  }catch(e){st.textContent='Error: '+e.message;console.error(e)}
+}
+window.fetchTBA=fetchTBA;
+
+// ── SUBMIT SCOUT ──
+async function submitScout(){
+  const team=document.getElementById('f-team').value.trim();
+  const match=document.getElementById('f-match').value.trim();
+  const scout=document.getElementById('f-scout').value.trim();
+  if(!team||!match||!scout){alert('Fill in Team #, Match #, and Scout Name.');return}
+  let sum=0;const ratings={};
+  RATINGS.forEach(r=>{const v=parseInt(document.getElementById('r-'+r.id).value);ratings[r.id]=v;sum+=v});
+  const entry={event:eventKey||'N/A',match:parseInt(match),team:parseInt(team),alliance:document.getElementById('f-alliance').value,startPos:document.getElementById('f-startpos').value,auto:document.getElementById('f-auto').value,endgame:document.getElementById('f-endgame').value,fouls:parseInt(document.getElementById('f-fouls').value)||0,defenseType:document.getElementById('f-defense').value,notes:document.getElementById('f-notes').value.trim(),scout,timestamp:new Date().toISOString(),avgRating:parseFloat((sum/RATINGS.length).toFixed(1)),...ratings};
+  if(window._fbRef&&window._fbPush){try{await window._fbPush(window._fbRef,entry)}catch{saveLocal(entry)}}else saveLocal(entry);
+  const ok=document.getElementById('scout-ok');ok.style.display='block';setTimeout(()=>ok.style.display='none',3000);
+  document.getElementById('f-match').value='';document.getElementById('f-team').value='';document.getElementById('f-notes').value='';document.getElementById('f-fouls').value='0';
+  RATINGS.forEach(r=>{document.getElementById('r-'+r.id).value=5;document.getElementById('rv-'+r.id).textContent='5'});
+}
+window.submitScout=submitScout;
+function saveLocal(e){const id='local_'+Date.now();scoutData[id]=e;localStorage.setItem('twrecks_scout_local',JSON.stringify(scoutData));renderTable()}
+
+// ── TABLE ──
+function renderTable(){
+  const filter=(document.getElementById('tbl-filter').value||'').toLowerCase();
+  const arr=Object.entries(scoutData).map(([k,v])=>({...v,_key:k}));
+  let data=arr.filter(e=>!filter||String(e.team).includes(filter)||String(e.scout||'').toLowerCase().includes(filter));
+  data.sort((a,b)=>{let va=a[sortKey],vb=b[sortKey];if(typeof va==='string')va=va.toLowerCase();if(typeof vb==='string')vb=vb.toLowerCase();return sortAsc?(va>vb?1:-1):(va<vb?1:-1)});
+  document.getElementById('rec-count').textContent=data.length+' records';
+  document.getElementById('tbl-empty').style.display=data.length===0?'block':'none';
+  document.getElementById('scout-tbl').style.display=data.length===0?'none':'';
+  document.getElementById('scout-tbody').innerHTML=data.map(e=>`<tr>
+    <td>${e.match}</td><td><span class="badge bp">${e.team}</span></td>
+    <td><span class="badge ${e.alliance==='Red'?'br':'bb'}">${e.alliance}</span></td>
+    <td>${e.driverSkill||'-'}</td><td>${e.accuracy||'-'}</td><td>${e.speed||'-'}</td>
+    <td>${e.defense||'-'}</td><td>${e.consistency||'-'}</td><td>${e.autoScore||'-'}</td>
+    <td><span class="badge ${(e.avgRating||0)>=7?'bgr':(e.avgRating||0)>=5?'bp':'br'}">${e.avgRating||'-'}</span></td>
+    <td style="font-size:10px;max-width:80px;overflow:hidden;text-overflow:ellipsis">${e.endgame||'-'}</td>
+    <td>${e.fouls||0}</td>
+    <td style="color:var(--text3);font-size:10px">${e.scout||''}</td>
+    <td style="max-width:90px;overflow:hidden;text-overflow:ellipsis;font-size:10px;color:var(--text3)" title="${e.notes||''}">${e.notes||'—'}</td>
+    <td><button class="btn-sm-icon" onclick="deleteEntry('${e._key}')">×</button></td>
+  </tr>`).join('');
+}
+window.renderTable=renderTable;
+function srt(k){sortKey===k?(sortAsc=!sortAsc):(sortKey=k,sortAsc=true);renderTable()}window.srt=srt;
+async function deleteEntry(key){
+  if(!confirm('Delete?'))return;
+  if(window._fbRef&&window._fbRemove){try{await window._fbRemove(window._fbRefFn('twrecks3206/scoutData/'+key))}catch{delete scoutData[key];renderTable()}}
+  else{delete scoutData[key];localStorage.setItem('twrecks_scout_local',JSON.stringify(scoutData));renderTable()}
+}
+window.deleteEntry=deleteEntry;
+async function clearData(){
+  if(!confirm('Clear ALL scouting data?'))return;
+  if(window._fbRef&&window._fbSet){try{await window._fbSet(window._fbRef,null)}catch{}}
+  scoutData={};localStorage.setItem('twrecks_scout_local',JSON.stringify(scoutData));renderTable();
+}
+window.clearData=clearData;
+function renderTBATable(){
+  const teams=Object.keys(tbaData);if(!teams.length)return;
+  document.getElementById('tba-tbody').innerHTML=teams
+    .sort((a,b)=>(tbaData[a].rank||999)-(tbaData[b].rank||999))
+    .map(t=>{const d=tbaData[t];return`<tr>
+      <td><span class="badge bg2">${t}</span></td><td>${d.rank||'—'}</td>
+      <td>${d.opr!=null?d.opr.toFixed(1):'—'}</td><td>${d.dpr!=null?d.dpr.toFixed(1):'—'}</td>
+      <td>${d.ccwm!=null?d.ccwm.toFixed(1):'—'}</td>
+      <td>${d.wins!=null?d.wins+'-'+d.losses+'-'+d.ties:'—'}</td>
+      <td>${d.avgScore!=null?d.avgScore.toFixed(1):'—'}</td>
+      <td style="border-left:2px solid rgba(251,146,60,.2)"><span class="badge bo">${d.avgAutoFuel!=null?d.avgAutoFuel:'—'}</span></td>
+      <td><span class="badge bo">${d.avgTeleopFuel!=null?d.avgTeleopFuel:'—'}</span></td>
+      <td><span class="badge bo">${d.avgTotalFuel!=null?d.avgTotalFuel:'—'}</span></td>
+    </tr>`}).join('');
+}
+function switchTab(tab,btn){document.querySelectorAll('.tab-btn').forEach(t=>t.classList.remove('active'));btn.classList.add('active');document.getElementById('tab-scouted').style.display=tab==='scouted'?'block':'none';document.getElementById('tab-tba').style.display=tab==='tba'?'block':'none'}
+window.switchTab=switchTab;
+function exportCSV(){
+  const arr=Object.values(scoutData);if(!arr.length){alert('No data.');return}
+  const h=['Event','Match','Team','Alliance','StartPos','DriverSkill','Accuracy','Speed','Defense','Consistency','AutoPerf','Adaptability','CoopPlay','AvgRating','AutoStrategy','Endgame','Fouls','DefenseType','Scout','Notes','Timestamp'];
+  const rows=arr.map(e=>[e.event,e.match,e.team,e.alliance,e.startPos,e.driverSkill,e.accuracy,e.speed,e.defense,e.consistency,e.autoScore,e.adaptability,e.coopPlay,e.avgRating,'"'+e.auto+'"','"'+e.endgame+'"',e.fouls,e.defenseType,'"'+e.scout+'"','"'+(e.notes||'').replace(/"/g,"'")+'"',e.timestamp]);
+  const csv=[h.join(','),...rows.map(r=>r.join(','))].join('\n');
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download='royal_twrecks_3206_scouting.csv';a.click();
+}
+window.exportCSV=exportCSV;
+
+// ── OPR CALCULATION (simple linear regression via least squares) ──
+function calcOPR(matches){
+  // Build team list and match matrix for OPR
+  const teams=new Set();
+  matches.forEach(m=>{
+    if(!m.played)return;
+    [...m.redTeams,...m.blueTeams].forEach(t=>teams.add(String(t)));
+  });
+  const teamList=[...teams].sort();
+  const n=teamList.length;if(n===0)return{};
+  const idx={};teamList.forEach((t,i)=>idx[t]=i);
+  // Build A (participation matrix) and b (scores)
+  const rows=[];const scoresR=[];
+  matches.forEach(m=>{
+    if(!m.played||m.redScore==null||m.blueScore==null)return;
+    const rRow=new Array(n).fill(0);m.redTeams.forEach(t=>{if(idx[String(t)]!=null)rRow[idx[String(t)]]=1});
+    const bRow=new Array(n).fill(0);m.blueTeams.forEach(t=>{if(idx[String(t)]!=null)bRow[idx[String(t)]]=1});
+    rows.push(rRow);scoresR.push(m.redScore);
+    rows.push(bRow);scoresR.push(m.blueScore);
+  });
+  if(rows.length<n)return{};// underdetermined
+  // Least squares: (A^T A)^-1 A^T b — use simple iterative approach
+  // Simple averaging approach as fallback
+  const totals={};const counts={};
+  matches.forEach(m=>{
+    if(!m.played)return;
+    const rs=m.redScore/3,bs=m.blueScore/3;
+    m.redTeams.forEach(t=>{totals[t]=(totals[t]||0)+rs;counts[t]=(counts[t]||0)+1});
+    m.blueTeams.forEach(t=>{totals[t]=(totals[t]||0)+bs;counts[t]=(counts[t]||0)+1});
+  });
+  const result={};
+  Object.keys(totals).forEach(t=>{result[t]=parseFloat((totals[t]/counts[t]).toFixed(1))});
+  return result;
+}
+
+// ── QUALS PREDICTOR ──
+function loadCSV(e){
+  const file=e.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    const lines=ev.target.result.trim().split('\n');
+    const header=lines[0].split(',').map(h=>h.trim().replace(/"/g,''));
+    const parsed=[];
+    for(let i=1;i<lines.length;i++){
+      const cols=lines[i].split(',').map(c=>c.trim().replace(/"/g,''));
+      if(cols.length<8)continue;
+      const obj={};header.forEach((h,j)=>obj[h]=cols[j]);
+      if(obj.comp_level&&obj.comp_level!=='qm')continue;// quals only
+      parsed.push({
+        key:obj.match_key||'',
+        match:parseInt(obj.match_number)||i,
+        redTeams:[obj.red1,obj.red2,obj.red3].filter(Boolean).map(Number),
+        blueTeams:[obj.blue1,obj.blue2,obj.blue3].filter(Boolean).map(Number),
+        redScore:obj.red_score&&obj.red_score!==''?parseInt(obj.red_score):null,
+        blueScore:obj.blue_score&&obj.blue_score!==''?parseInt(obj.blue_score):null,
+        played:obj.red_score&&obj.red_score!==''&&!isNaN(parseInt(obj.red_score))&&parseInt(obj.red_score)>=0,
+        time:obj.scheduled_time||''
+      });
+    }
+    matchSchedule=parsed.sort((a,b)=>a.match-b.match);
+    localStorage.setItem('twrecks_schedule',JSON.stringify(matchSchedule));
+    const st=document.getElementById('quals-status');
+    st.style.display='block';
+    st.textContent=`✓ Loaded ${matchSchedule.length} quals matches — ${matchSchedule.filter(m=>m.played).length} played, ${matchSchedule.filter(m=>!m.played).length} unplayed`;
+    renderQuals();
+  };
+  reader.readAsText(file);
+}
+window.loadCSV=loadCSV;
+
+async function fetchQualsFromTBA(){
+  if(!tbaKey){alert('Set TBA API key in Database page first.');return}
+  const ev=eventKey||document.getElementById('tba-event')?.value?.trim();
+  if(!ev){alert('Set event key in Database page first.');return}
+  const st=document.getElementById('quals-status');st.style.display='block';st.textContent='Fetching schedule...';
+  try{
+    const h={'X-TBA-Auth-Key':tbaKey};
+    const r=await fetch(`https://www.thebluealliance.com/api/v3/event/${ev}/matches`,{headers:h});
+    const mj=await r.json();
+    if(!Array.isArray(mj)){st.textContent='No matches returned.';return}
+    const parsed=mj.filter(m=>m.comp_level==='qm').map(m=>({
+      key:m.key,match:m.match_number,
+      redTeams:(m.alliances?.red?.team_keys||[]).map(k=>parseInt(k.replace('frc',''))),
+      blueTeams:(m.alliances?.blue?.team_keys||[]).map(k=>parseInt(k.replace('frc',''))),
+      redScore:m.alliances?.red?.score,
+      blueScore:m.alliances?.blue?.score,
+      played:m.alliances?.red?.score!=null&&m.alliances?.red?.score>=0&&m.winning_team_key!==undefined||m.score_breakdown!=null,
+      time:''
+    })).sort((a,b)=>a.match-b.match);
+    matchSchedule=parsed;
+    localStorage.setItem('twrecks_schedule',JSON.stringify(matchSchedule));
+    st.textContent=`✓ Loaded ${parsed.length} quals matches from TBA — ${parsed.filter(m=>m.played).length} played`;
+    renderQuals();
+  }catch(e){st.textContent='Error: '+e.message}
+}
+window.fetchQualsFromTBA=fetchQualsFromTBA;
+
+function getOPR(team){
+  const t=String(team);
+  if(tbaData[t]?.opr!=null)return tbaData[t].opr;
+  // Fallback: calculate from schedule
+  const localOPR=calcOPR(matchSchedule);
+  return localOPR[t]||null;
+}
+function getAllianceOPR(teams){return teams.reduce((s,t)=>s+(getOPR(t)||0),0)}
+
+function predictMatch(m){
+  const rOPR=getAllianceOPR(m.redTeams);
+  const bOPR=getAllianceOPR(m.blueTeams);
+  const total=rOPR+bOPR;
+  const rPct=total>0?Math.round((rOPR/total)*100):50;
+  const bPct=100-rPct;
+  const rPred=Math.round(rOPR);
+  const bPred=Math.round(bOPR);
+  return{rPct,bPct,rPred,bPred,rOPR,bOPR};
+}
+
+function renderQuals(){
+  if(!matchSchedule.length){document.getElementById('quals-match-list').innerHTML='<div class="empty">Load a schedule CSV or fetch from TBA</div>';renderStandings();return}
+  const filter=(document.getElementById('quals-filter')?.value)||'all';
+  const teamFilter=(document.getElementById('quals-team-filter')?.value||'').trim();
+  let matches=matchSchedule.filter(m=>{
+    if(filter==='played'&&!m.played)return false;
+    if(filter==='unplayed'&&m.played)return false;
+    if(teamFilter){const teams=[...m.redTeams,...m.blueTeams].map(String);if(!teams.some(t=>t.includes(teamFilter)))return false}
+    return true;
+  });
+  const html=matches.map(m=>{
+    const pred=predictMatch(m);
+    const rWin=m.played?m.redScore>m.blueScore:pred.rPct>pred.bPct;
+    const bWin=m.played?m.blueScore>m.redScore:pred.bPct>pred.rPct;
+    return`<div class="match-row ${m.played?'played':'predicted'}">
+      <span class="match-num">Q${m.match}</span>
+      <div class="match-teams">
+        ${m.redTeams.map(t=>`<span class="mt r${m.played&&rWin?' winner':''}">${t}</span>`).join('')}
+        <span style="color:var(--text3);font-family:var(--fm);font-size:10px;padding:0 3px">vs</span>
+        ${m.blueTeams.map(t=>`<span class="mt b${m.played&&bWin?' winner':''}">${t}</span>`).join('')}
+      </div>
+      ${m.played
+        ?`<div class="match-score"><span class="rs">${m.redScore}</span><span class="sep">—</span><span class="bs">${m.blueScore}</span></div><span class="played-badge">FINAL</span>`
+        :`<div class="match-score" style="color:var(--text3);font-size:10px">~${pred.rPred}<span class="sep">—</span>~${pred.bPred}</div><span class="pred-badge">OPR SIM</span><span class="match-prob">R:${pred.rPct}% B:${pred.bPct}%</span>`
+      }
+    </div>`;
+  }).join('');
+  document.getElementById('quals-match-list').innerHTML=html||'<div class="empty">No matches match filter</div>';
+  renderStandings();
+  renderOPRBoard();
+}
+window.renderQuals=renderQuals;
+
+function renderStandings(){
+  // Simulate full schedule — actual scores for played, OPR predictions for unplayed
+  const standings={};
+  const addTeam=t=>{if(!standings[t])standings[t]={team:t,wins:0,losses:0,ties:0,rp:0,avgScore:0,scores:[],totalFuel:tbaData[String(t)]?.avgTotalFuel}}
+  matchSchedule.forEach(m=>{
+    [...m.redTeams,...m.blueTeams].forEach(addTeam);
+    const pred=predictMatch(m);
+    const rScore=m.played?m.redScore:pred.rPred;
+    const bScore=m.played?m.blueScore:pred.bPred;
+    const rWin=rScore>bScore,bWin=bScore>rScore,tie=rScore===bScore;
+    m.redTeams.forEach(t=>{
+      if(!standings[t])addTeam(t);
+      if(rWin){standings[t].wins++;standings[t].rp+=2}else if(tie){standings[t].ties++;standings[t].rp+=1}else standings[t].losses++;
+      standings[t].scores.push(rScore);
+    });
+    m.blueTeams.forEach(t=>{
+      if(!standings[t])addTeam(t);
+      if(bWin){standings[t].wins++;standings[t].rp+=2}else if(tie){standings[t].ties++;standings[t].rp+=1}else standings[t].losses++;
+      standings[t].scores.push(bScore);
+    });
+  });
+  const sorted=Object.values(standings).sort((a,b)=>{
+    if(b.rp!==a.rp)return b.rp-a.rp;
+    const aAvg=a.scores.length?a.scores.reduce((s,v)=>s+v,0)/a.scores.length:0;
+    const bAvg=b.scores.length?b.scores.reduce((s,v)=>s+v,0)/b.scores.length:0;
+    return bAvg-aAvg;
+  });
+  document.getElementById('quals-standings').innerHTML=`
+    <table class="tbl" style="min-width:200px"><thead><tr>
+      <th>Rank</th><th>Team</th><th>W-L-T</th><th>RP</th><th>Avg Score</th><th class="fc">⛽Fuel</th>
+    </tr></thead><tbody>${sorted.map((t,i)=>{
+      const avg=t.scores.length?(t.scores.reduce((s,v)=>s+v,0)/t.scores.length).toFixed(0):'-';
+      const isUs=String(t.team)==='3206';
+      return`<tr ${isUs?'style="background:rgba(240,192,64,.07)"':''}>
+        <td><span class="badge ${i<8?'bgr':'bp'}">${i+1}</span></td>
+        <td style="color:${isUs?'var(--gold2)':'var(--text)'};font-weight:${isUs?'700':'400'}">${t.team}${isUs?' 👑':''}</td>
+        <td>${t.wins}-${t.losses}-${t.ties}</td>
+        <td style="color:var(--accent3);font-weight:700">${t.rp}</td>
+        <td>${avg}</td>
+        <td><span class="badge bo">${t.totalFuel!=null?t.totalFuel:'—'}</span></td>
+      </tr>`;
+    }).join('')}</tbody></table>`;
+}
+
+function renderOPRBoard(){
+  const teams=Object.keys(tbaData).filter(t=>tbaData[t].opr!=null);
+  if(!teams.length){document.getElementById('opr-board').innerHTML='<div class="empty" style="padding:12px">Fetch TBA data first</div>';return}
+  const sorted=teams.sort((a,b)=>(tbaData[b].opr||0)-(tbaData[a].opr||0));
+  document.getElementById('opr-board').innerHTML=`
+    <table class="tbl" style="min-width:180px"><thead><tr>
+      <th>Rank</th><th>Team</th><th>OPR</th><th>DPR</th><th>CCWM</th>
+    </tr></thead><tbody>${sorted.slice(0,20).map((t,i)=>{
+      const d=tbaData[t];const isUs=t==='3206';
+      return`<tr ${isUs?'style="background:rgba(240,192,64,.07)"':''}>
+        <td><span class="badge ${i<3?'bg2':i<8?'bgr':'bp'}">${i+1}</span></td>
+        <td style="color:${isUs?'var(--gold2)':'var(--text)'};font-weight:${isUs?'700':'400'}">${t}${isUs?' 👑':''}</td>
+        <td style="color:var(--accent3);font-weight:700">${d.opr!=null?d.opr.toFixed(1):'—'}</td>
+        <td style="color:var(--red)">${d.dpr!=null?d.dpr.toFixed(1):'—'}</td>
+        <td style="color:var(--green)">${d.ccwm!=null?d.ccwm.toFixed(1):'—'}</td>
+      </tr>`;
+    }).join('')}</tbody></table>`;
+}
+
+// ── BRACKET ──
+async function fetchBracket(){
+  const ev=eventKey;
+  if(!ev||!tbaKey){document.getElementById('bracket-status').textContent='Set TBA key and event key in Database first';return}
+  document.getElementById('bracket-status').textContent='Fetching bracket...';
+  try{
+    const h={'X-TBA-Auth-Key':tbaKey};
+    const r=await fetch(`https://www.thebluealliance.com/api/v3/event/${ev}/matches`,{headers:h});
+    const mj=await r.json();
+    bracketMatches=mj.filter(m=>m.comp_level==='sf'||m.comp_level==='f');
+    localStorage.setItem('twrecks_bracket',JSON.stringify(bracketMatches));
+    document.getElementById('bracket-status').textContent=`✓ Loaded ${bracketMatches.length} playoff matches`;
+    renderBracket();
+  }catch(e){document.getElementById('bracket-status').textContent='Error: '+e.message}
+}
+window.fetchBracket=fetchBracket;
+
+function getMatchTeams(match){
+  const red=(match.alliances?.red?.team_keys||[]).map(k=>k.replace('frc',''));
+  const blue=(match.alliances?.blue?.team_keys||[]).map(k=>k.replace('frc',''));
+  return{red,blue};
+}
+function getMatchResult(match){
+  const rs=match.alliances?.red?.score;const bs=match.alliances?.blue?.score;
+  if(rs==null||bs==null||rs<0)return null;
+  return{redScore:rs,blueScore:bs,winner:rs>bs?'red':bs>rs?'blue':'tie'};
+}
+function bracketWinProb(redTeams,blueTeams){
+  const rOPR=redTeams.reduce((s,t)=>{const d=tbaData[t];return s+(d?.opr||0)},0);
+  const bOPR=blueTeams.reduce((s,t)=>{const d=tbaData[t];return s+(d?.opr||0)},0);
+  const tot=rOPR+bOPR;if(tot===0)return{r:50,b:50};
+  const r=Math.round((rOPR/tot)*100);return{r,b:100-r};
+}
+
+function renderBracket(){
+  try{const b=localStorage.getItem('twrecks_bracket');if(b&&!bracketMatches.length)bracketMatches=JSON.parse(b)}catch{}
+  const container=document.getElementById('bracket-container');
+  if(!bracketMatches.length){container.innerHTML='<div class="empty">Click "Fetch Bracket from TBA" to load playoff matches</div>';return}
+
+  // Group by set number and comp level
+  const sfMatches=bracketMatches.filter(m=>m.comp_level==='sf').sort((a,b)=>a.set_number-b.set_number||a.match_number-b.match_number);
+  const fMatches=bracketMatches.filter(m=>m.comp_level==='f').sort((a,b)=>a.match_number-b.match_number);
+
+  // Group sf by set
+  const sets={};
+  sfMatches.forEach(m=>{
+    const s=m.set_number;if(!sets[s])sets[s]=[];sets[s].push(m);
+  });
+
+  let html='<div class="bracket-wrap"><div class="bracket">';
+
+  // SF Sets
+  const sortedSets=Object.keys(sets).sort((a,b)=>Number(a)-Number(b));
+  html+='<div class="bracket-col"><div class="bracket-col-title">Semifinals</div>';
+  sortedSets.forEach(s=>{
+    const ms=sets[s];
+    // Determine series state
+    let redWins=0,blueWins=0;
+    ms.forEach(m=>{const res=getMatchResult(m);if(res){if(res.winner==='red')redWins++;else if(res.winner==='blue')blueWins++;}});
+    const seriesWinner=redWins>=2?'red':blueWins>=2?'blue':null;
+    const lastPlayed=ms.filter(m=>getMatchResult(m)).pop();
+    const nextMatch=ms.find(m=>!getMatchResult(m));
+    const showMatch=lastPlayed||ms[0];
+    const{red,blue}=getMatchTeams(showMatch);
+    const res=lastPlayed?getMatchResult(lastPlayed):null;
+    const prob=(!seriesWinner&&red.length&&blue.length)?bracketWinProb(red,blue):null;
+
+    html+=`<div class="b-match ${seriesWinner?'':'winners-side'}">
+      <div class="b-match-label">SF Set ${s} ${redWins}-${blueWins}</div>
+      ${seriesWinner?`<div class="b-eliminated">DONE</div>`:''}
+      <div class="b-team">
+        <span class="b-team-name ${seriesWinner==='red'?'winner-team':''}">${red.join(', ')||'TBD'}</span>
+        <span class="b-score ${seriesWinner==='red'?'won':seriesWinner==='blue'?'lost':''}">${redWins}</span>
+      </div>
+      <div class="b-team">
+        <span class="b-team-name ${seriesWinner==='blue'?'winner-team':''}">${blue.join(', ')||'TBD'}</span>
+        <span class="b-score ${seriesWinner==='blue'?'won':seriesWinner==='red'?'lost':''}">${blueWins}</span>
+      </div>
+      ${prob?`<div class="b-prob">Next: <span>${red[0]||'?'} side ${prob.r}%</span> vs <span>${blue[0]||'?'} side ${prob.b}%</span></div>`:''}
+    </div>`;
+  });
+  html+='</div>';
+
+  // Finals
+  if(fMatches.length){
+    html+='<div class="bracket-col"><div class="bracket-col-title">Finals</div>';
+    let redWins=0,blueWins=0;
+    fMatches.forEach(m=>{const res=getMatchResult(m);if(res){if(res.winner==='red')redWins++;else if(res.winner==='blue')blueWins++;}});
+    const lastF=fMatches.filter(m=>getMatchResult(m)).pop()||fMatches[0];
+    const{red,blue}=getMatchTeams(lastF);
+    const seriesWinner=redWins>=2?'red':blueWins>=2?'blue':null;
+    const prob=(!seriesWinner&&red.length&&blue.length)?bracketWinProb(red,blue):null;
+    html+=`<div class="b-match finals-match">
+      <div class="b-match-label">FINALS ${redWins}-${blueWins}</div>
+      <div class="b-team">
+        <span class="b-team-name ${seriesWinner==='red'?'winner-team':''}">${red.join(', ')||'TBD'}</span>
+        <span class="b-score ${seriesWinner==='red'?'won':seriesWinner==='blue'?'lost':''}">${redWins}</span>
+      </div>
+      <div class="b-team">
+        <span class="b-team-name ${seriesWinner==='blue'?'winner-team':''}">${blue.join(', ')||'TBD'}</span>
+        <span class="b-score ${seriesWinner==='blue'?'won':seriesWinner==='red'?'lost':''}">${blueWins}</span>
+      </div>
+      ${seriesWinner?`<div class="b-prob" style="color:var(--gold2)">🏆 ${seriesWinner==='red'?red.join(', '):blue.join(', ')} WIN THE EVENT</div>`:''}
+      ${prob?`<div class="b-prob">Win prob: <span>${red[0]||'?'} side ${prob.r}%</span> vs <span>${blue[0]||'?'} side ${prob.b}%</span></div>`:''}
+    </div>`;
+    html+='</div>';
+  }
+  html+='</div></div>';
+  container.innerHTML=html;
+}
+window.renderBracket=renderBracket;
+
+// ── STRATEGY ──
+function maxFuel(){const vals=Object.values(tbaData).map(d=>d.avgTotalFuel).filter(v=>v!=null);return vals.length?Math.max(...vals):null}
+function compositeScore(scoutAvg,teamNum){
+  const td=tbaData[teamNum];const mf=maxFuel();
+  if(td?.avgTotalFuel!=null&&mf&&mf>0)return parseFloat((scoutAvg*0.6+((td.avgTotalFuel/mf)*10)*0.4).toFixed(2));
+  return parseFloat(scoutAvg.toFixed(2));
+}
+function getTeamMap(){
+  const m={};
+  Object.values(scoutData).forEach(e=>{
+    if(!m[e.team])m[e.team]={total:0,count:0,ratings:{},matches:[]};
+    m[e.team].total+=e.avgRating||0;m[e.team].count++;m[e.team].matches.push(e);
+    RATINGS.forEach(r=>{m[e.team].ratings[r.id]=(m[e.team].ratings[r.id]||0)+(e[r.id]||0)});
+  });
+  return m;
+}
+function getTeams(map){
+  return Object.entries(map).map(([t,d])=>({
+    team:t,scoutAvg:parseFloat((d.total/d.count).toFixed(1)),
+    composite:compositeScore(d.total/d.count,t),
+    count:d.count,matches:d.matches,
+    driverSkill:parseFloat((d.ratings.driverSkill/d.count).toFixed(1)),
+    accuracy:parseFloat((d.ratings.accuracy/d.count).toFixed(1)),
+    autoScore:parseFloat((d.ratings.autoScore/d.count).toFixed(1)),
+    speed:parseFloat((d.ratings.speed/d.count).toFixed(1)),
+    avgAutoFuel:tbaData[t]?.avgAutoFuel??null,
+    avgTeleopFuel:tbaData[t]?.avgTeleopFuel??null,
+    avgTotalFuel:tbaData[t]?.avgTotalFuel??null,
+  })).sort((a,b)=>b.composite-a.composite);
+}
+function renderStrategy(){
+  const map=getTeamMap(),teams=getTeams(map);
+  document.getElementById('strat-top').innerHTML=!teams.length?'<div class="empty" style="padding:14px">No data yet</div>':
+    teams.slice(0,8).map((t,i)=>`<div class="rank-row">
+      <span class="rank-n" style="color:${i===0?'var(--gold)':i<3?'var(--accent3)':'var(--text3)'}">${i+1}</span>
+      <span class="rank-t">Team ${t.team}</span><span class="rank-s">${t.composite}</span>
+      ${t.avgTotalFuel!=null?`<span class="rank-e" style="color:var(--orange)">⛽${t.avgTotalFuel}</span>`:''}
+      <span class="rank-e">(${t.count})</span></div>`).join('');
+  if(!Object.keys(scoutData).length){
+    document.getElementById('strat-summary').innerHTML='<div class="empty" style="padding:14px">No data yet</div>';
+  }else{
+    const allAvg=(Object.values(scoutData).reduce((s,e)=>s+(e.avgRating||0),0)/Object.values(scoutData).length).toFixed(1);
+    const fuelVals=Object.values(tbaData).map(d=>d.avgTotalFuel).filter(v=>v!=null);
+    const avgF=fuelVals.length?(fuelVals.reduce((s,v)=>s+v,0)/fuelVals.length).toFixed(1):'—';
+    document.getElementById('strat-summary').innerHTML=`
+      <div class="stat-row"><span class="stat-name">Teams Scouted</span><span class="stat-v">${Object.keys(map).length}</span></div>
+      <div class="stat-row"><span class="stat-name">Total Entries</span><span class="stat-v">${Object.keys(scoutData).length}</span></div>
+      <div class="stat-row"><span class="stat-name">Field Avg Rating</span><span class="stat-v">${allAvg}</span></div>
+      <div class="stat-row"><span class="stat-name">Top Team</span><span class="stat-v">${teams[0]?teams[0].team:'—'}</span></div>
+      <div class="stat-row"><span class="stat-name">Field Avg Fuel</span><span class="stat-v" style="color:var(--orange)">${avgF}</span></div>
+      <div class="stat-row"><span class="stat-name">Active Event</span><span class="stat-v" style="font-size:10px">${eventKey?eventKey.toUpperCase():'—'}</span></div>`;
+  }
+  document.getElementById('strat-picklist').innerHTML=!teams.length?'<div class="empty" style="padding:14px">Scout more teams first</div>':
+    `<div class="tbl-wrap"><table class="tbl" style="min-width:480px"><thead><tr>
+      <th>Rank</th><th>Team</th><th>Composite</th><th>Scout</th><th>Driver</th><th>Acc.</th><th>Auto</th>
+      <th class="fc" style="border-left:2px solid rgba(251,146,60,.2)">Auto⛽</th>
+      <th class="fc">Teleop⛽</th><th class="fc">Total⛽</th><th>Matches</th>
+    </tr></thead><tbody>${teams.map((t,i)=>`<tr>
+      <td><span class="badge ${i<1?'bg2':i<3?'bp':'bgr'}">#${i+1}</span></td>
+      <td style="color:var(--text);font-weight:500">${t.team}</td>
+      <td><span class="badge ${t.composite>=7?'bgr':t.composite>=5?'bp':'br'}">${t.composite}</span></td>
+      <td>${t.scoutAvg}</td><td>${t.driverSkill}</td><td>${t.accuracy}</td><td>${t.autoScore}</td>
+      <td style="border-left:2px solid rgba(251,146,60,.15)"><span class="badge bo">${t.avgAutoFuel!=null?t.avgAutoFuel:'—'}</span></td>
+      <td><span class="badge bo">${t.avgTeleopFuel!=null?t.avgTeleopFuel:'—'}</span></td>
+      <td><span class="badge bo">${t.avgTotalFuel!=null?t.avgTotalFuel:'—'}</span></td>
+      <td style="color:var(--text3)">${t.count}</td>
+    </tr>`).join('')}</tbody></table></div>`;
+}
+window.renderStrategy=renderStrategy;
+
+// ── TEAM LOOKUP (enhanced) ──
+function lookupTeam(){
+  const num=document.getElementById('lookup-input').value.trim();if(!num){alert('Enter a team number.');return}
+  const map=getTeamMap();const td=tbaData[num];const sd=map[num];
+  const res=document.getElementById('lookup-result');
+  if(!td&&!sd){res.style.display='block';res.innerHTML='<div class="empty" style="padding:14px">No data found for Team '+num+'</div>';return}
+  const entries=sd?sd.matches||[]:[];
+  const scoutAvg=sd?(sd.total/sd.count).toFixed(1):'N/A';
+  const comp=sd?compositeScore(sd.total/sd.count,num):'N/A';
+  // Calculate win/loss from schedule
+  let wins=0,losses=0,teamScores=[];
+  matchSchedule.forEach(m=>{
+    if(!m.played)return;
+    const onRed=m.redTeams.map(String).includes(String(num));
+    const onBlue=m.blueTeams.map(String).includes(String(num));
+    if(!onRed&&!onBlue)return;
+    const myScore=onRed?m.redScore:m.blueScore;
+    const oppScore=onRed?m.blueScore:m.redScore;
+    teamScores.push(myScore);
+    if(myScore>oppScore)wins++;else if(myScore<oppScore)losses++;
+  });
+  const actualWinPct=wins+losses>0?Math.round((wins/(wins+losses))*100):null;
+  const bestScore=teamScores.length?Math.max(...teamScores):null;
+  const worstScore=teamScores.length?Math.min(...teamScores):null;
+  const avgActual=teamScores.length?(teamScores.reduce((s,v)=>s+v,0)/teamScores.length).toFixed(0):null;
+  // DPR = how many points scored against teams they play with (from TBA)
+  const dpr=td?.dpr;const ccwm=td?.ccwm;const opr=td?.opr;
+  res.style.display='block';
+  res.innerHTML=`<div class="lookup-res">
+    <div class="lu-header">
+      <div class="lu-num">Team ${num}</div>
+      <div>
+        <div class="lu-meta">${sd?sd.count+' match'+(sd.count!==1?'es':'')+' scouted':'No scouting data'}</div>
+        <div class="lu-meta">${td?.rank?'Rank #'+td.rank+(eventKey?' at '+eventKey.toUpperCase():''):''}</div>
+        <div class="lu-meta">${wins+losses>0?wins+'-'+losses+' from actual results':''}</div>
+      </div>
+    </div>
+    <div class="lu-grid">
+      <div class="lu-stat"><div class="lu-stat-label">Composite Score</div><div class="lu-stat-val">${comp}</div></div>
+      <div class="lu-stat"><div class="lu-stat-label">Scout Avg</div><div class="lu-stat-val">${scoutAvg}</div></div>
+      <div class="lu-stat"><div class="lu-stat-label">OPR</div><div class="lu-stat-val">${opr!=null?opr.toFixed(1):'—'}</div></div>
+      <div class="lu-stat ${dpr!=null&&dpr<30?'good':'warn'}"><div class="lu-stat-label">DPR (lower=better)</div><div class="lu-stat-val">${dpr!=null?dpr.toFixed(1):'—'}</div></div>
+      <div class="lu-stat ${ccwm!=null&&ccwm>0?'good':'warn'}"><div class="lu-stat-label">CCWM</div><div class="lu-stat-val">${ccwm!=null?ccwm.toFixed(1):'—'}</div></div>
+      <div class="lu-stat"><div class="lu-stat-label">W-L (actual)</div><div class="lu-stat-val">${td?.wins!=null?td.wins+'-'+td.losses:wins+losses>0?wins+'-'+losses:'—'}</div></div>
+      <div class="lu-stat ${actualWinPct!=null&&actualWinPct>=60?'good':actualWinPct!=null&&actualWinPct<40?'warn':''}"><div class="lu-stat-label">Win %</div><div class="lu-stat-val">${actualWinPct!=null?actualWinPct+'%':'—'}</div></div>
+      <div class="lu-stat good"><div class="lu-stat-label">Best Match Score</div><div class="lu-stat-val">${bestScore!=null?bestScore:'—'}</div></div>
+      <div class="lu-stat warn"><div class="lu-stat-label">Worst Match Score</div><div class="lu-stat-val">${worstScore!=null?worstScore:'—'}</div></div>
+      <div class="lu-stat"><div class="lu-stat-label">Avg Alliance Score</div><div class="lu-stat-val">${avgActual||td?.avgAllianceScore?.toFixed(0)||'—'}</div></div>
+      <div class="lu-stat"><div class="lu-stat-label">Driver Skill</div><div class="lu-stat-val">${sd?parseFloat((sd.ratings.driverSkill/sd.count).toFixed(1)):'—'}</div></div>
+      <div class="lu-stat"><div class="lu-stat-label">Accuracy</div><div class="lu-stat-val">${sd?parseFloat((sd.ratings.accuracy/sd.count).toFixed(1)):'—'}</div></div>
+      <div class="lu-stat fuel"><div class="lu-stat-label">⛽ Auto Fuel Avg</div><div class="lu-stat-val">${td?.avgAutoFuel!=null?td.avgAutoFuel:'—'}</div></div>
+      <div class="lu-stat fuel"><div class="lu-stat-label">⛽ Teleop Fuel Avg</div><div class="lu-stat-val">${td?.avgTeleopFuel!=null?td.avgTeleopFuel:'—'}</div></div>
+      <div class="lu-stat fuel"><div class="lu-stat-label">⛽ Total Fuel Avg</div><div class="lu-stat-val">${td?.avgTotalFuel!=null?td.avgTotalFuel:'—'}</div></div>
+    </div>
+    ${entries.length?`<div class="lu-match-title">Scouted Match History</div>
+      ${entries.sort((a,b)=>a.match-b.match).map(e=>`
+        <div class="lu-match-row">
+          <span class="badge ${e.alliance==='Red'?'br':'bb'}" style="font-size:9px">Q${e.match}</span>
+          <span style="color:var(--text2)">Avg ${e.avgRating}</span>
+          <span style="color:var(--text3);font-size:10px">${e.endgame||''}</span>
+          <span style="color:var(--text3);font-size:10px">${e.defenseType!=='None'?'DEF:'+e.defenseType:''}</span>
+          <span style="color:var(--text3);font-size:10px;margin-left:auto">${e.scout||''}</span>
+        </div>`).join('')}`:''}
+  </div>`;
+}
+window.lookupTeam=lookupTeam;
+
+// ── MATCH PREDICTOR ──
+function getAvg(num){
+  const entries=Object.values(scoutData).filter(e=>String(e.team)===String(num));
+  const td=tbaData[num];
+  if(entries.length){const sa=entries.reduce((s,e)=>s+(e.avgRating||0),0)/entries.length;return compositeScore(sa,num)}
+  return td?.opr!=null?Math.min(10,td.opr/15):null;
+}
+function predict(){
+  const red=['pr1','pr2','pr3'].map(id=>document.getElementById(id).value.trim()).filter(Boolean);
+  const blue=['pb1','pb2','pb3'].map(id=>document.getElementById(id).value.trim()).filter(Boolean);
+  if(!red.length||!blue.length){alert('Enter at least one team per alliance.');return}
+  const all=[...red,...blue].map(t=>getAvg(t)).filter(v=>v!==null);
+  const fb=all.length?all.reduce((s,v)=>s+v,0)/all.length:5;
+  const ra=red.map(t=>getAvg(t)??fb).reduce((s,v)=>s+v,0)/red.length;
+  const ba=blue.map(t=>getAvg(t)??fb).reduce((s,v)=>s+v,0)/blue.length;
+  const tot=ra+ba,rp=Math.round((ra/tot)*100),bp=100-rp;
+  const fav=rp>=bp?'RED':'BLUE',conf=Math.abs(rp-bp);
+  const cl=conf<8?'Too close to call':conf<20?'Slight advantage':'Strong favorite';
   const miss=[...red,...blue].filter(t=>getAvg(t)===null);
   const r=document.getElementById('pred-result');r.style.display='block';
   r.innerHTML=`<div class="pred-res">
