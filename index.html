@@ -8,16 +8,14 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
   --bg:#080a0f;--bg2:#0c0f18;--bg3:#111520;--bg4:#161c2c;
-  --border:rg3ba(168,124,255,0.12);--border2:rgba(168,124,255,0.28);
+  --border:rgba(168,124,255,0.12);--border2:rgba(168,124,255,0.28);
   --accent:#a87cff;--accent2:#8b5cf6;--accent3:#c4b0ff;
-  --gold:#a87cff;--gold2:#a87cff;--goldbg:rgba(168, 124, 255, 1);
+  --gold:#f0c040;--gold2:#ffd966;--goldbg:rgba(240,192,64,0.12);
   --red:#ff6b6b;--redbg:rgba(255,107,107,0.12);
   --green:#4ade80;--greenbg:rgba(74,222,128,0.12);
   --blue:#60a5fa;--bluebg:rgba(96,165,250,0.12);
   --orange:#fb923c;--orangebg:rgba(251,146,60,0.12);
   --text:#e8e4f0;--text2:#a89cc0;--text3:#5a5470;
-  --black:#000000;
-  --BRG:#1111111;
   --fh:'Cinzel',serif;--fb:'Exo 2',sans-serif;--fm:'Share Tech Mono',monospace;
 }
 body{background:var(--bg);color:var(--text);font-family:var(--fb);font-size:13px;line-height:1.5;min-height:100vh}
@@ -32,9 +30,9 @@ body{background:var(--bg);color:var(--text);font-family:var(--fb);font-size:13px
 .brand-sub{font-family:var(--fm);font-size:9px;color:var(--text3);letter-spacing:1.5px}
 .hdr-right{display:flex;align-items:center;gap:8px}
 .admin-pill{font-family:var(--fm);font-size:9px;padding:3px 8px;border:1px solid;letter-spacing:1px}
-.admin-pill.locked{color:var(--gold);border-color:var(--text3)}
-.admin-pill.unlocked{color:var(--black);border-color:var(--gold);background:var(--goldbg)}
-.hdr-btn{font-family:var(--fh);font-size:10px;font-weight:600;letter-spacing:1px;padding:4px 11px;border:1px solid var(--border2);background:transparent;color:var(--gold);cursor:pointer;transition:all .2s}
+.admin-pill.locked{color:var(--text3);border-color:var(--text3)}
+.admin-pill.unlocked{color:var(--gold);border-color:var(--gold);background:var(--goldbg)}
+.hdr-btn{font-family:var(--fh);font-size:10px;font-weight:600;letter-spacing:1px;padding:4px 11px;border:1px solid var(--border2);background:transparent;color:var(--text2);cursor:pointer;transition:all .2s}
 .hdr-btn:hover{border-color:var(--accent);color:var(--accent)}
 
 /* NAV */
@@ -84,7 +82,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--fb);font-size:13px
 .ev-val{font-family:var(--fm);font-size:12px;color:var(--gold2);letter-spacing:1px}
 .ev-none{font-family:var(--fm);font-size:11px;color:var(--red)}
 .success-banner{background:var(--greenbg);border:1px solid rgba(74,222,128,.4);color:var(--green);font-family:var(--fm);font-size:11px;padding:7px 12px;margin-bottom:12px;letter-spacing:1px}
-.api-banner{background:var();border:1px solid rgba(240,192,64,.25);color:var(--gold2);font-family:var(--fm);font-size:10px;padding:7px 11px;margin-bottom:12px;letter-spacing:1px}
+.api-banner{background:var(--goldbg);border:1px solid rgba(240,192,64,.25);color:var(--gold2);font-family:var(--fm);font-size:10px;padding:7px 11px;margin-bottom:12px;letter-spacing:1px}
 .fuel-banner{background:var(--orangebg);border:1px solid rgba(251,146,60,.3);color:var(--orange);font-family:var(--fm);font-size:10px;padding:7px 11px;margin-bottom:0;letter-spacing:1px}
 .info-banner{background:var(--bluebg);border:1px solid rgba(96,165,250,.3);color:var(--blue);font-family:var(--fm);font-size:10px;padding:7px 11px;margin-bottom:12px;letter-spacing:1px}
 
@@ -129,7 +127,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--fb);font-size:13px
 .tbl tr:hover td{background:rgba(168,124,255,.04)}
 .badge{font-family:var(--fm);font-size:10px;padding:2px 6px;letter-spacing:1px}
 .bp{background:rgba(168,124,255,.15);color:var(--accent3)}
-.bg2{background:var();color:var(--gold)}
+.bg2{background:var(--goldbg);color:var(--gold2)}
 .bgr{background:var(--greenbg);color:var(--green)}
 .br{background:var(--redbg);color:var(--red)}
 .bb{background:var(--bluebg);color:var(--blue)}
@@ -266,8 +264,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--fb);font-size:13px
     <div class="brand-col">
       <span class="brand-name">
         <svg style="display:inline-block;width:15px;height:10px;vertical-align:middle;margin-right:4px" viewBox="0 0 22 16" fill="none">
-          <path d="M1 14h20M1 14L4 4l5 5 2-7 2 7 5-5 3 10" stroke="#a87cff" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>
-          <circle cx="2.5" cy="3.5" r="1.5" fill="#a87cff"/><circle cx="11" cy="1.5" r="1.5" fill="#a87cff"/><circle cx="19.5" cy="3.5" r="1.5" fill="#a87cff"/>
+          <path d="M1 14h20M1 14L4 4l5 5 2-7 2 7 5-5 3 10" stroke="#f0c040" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>
+          <circle cx="2.5" cy="3.5" r="1.5" fill="#f0c040"/><circle cx="11" cy="1.5" r="1.5" fill="#f0c040"/><circle cx="19.5" cy="3.5" r="1.5" fill="#f0c040"/>
         </svg>Royal T-Wrecks
       </span>
       <span class="brand-sub">FRC · Team 3206 · Rebuilt 2026</span>
@@ -306,11 +304,11 @@ body{background:var(--bg);color:var(--text);font-family:var(--fb);font-size:13px
   <div class="fb-modal">
     <div class="fb-modal-title">Firebase Configuration</div>
     <div class="info-banner">Enables live shared database across all scout devices.</div>
-    <div class="fb-field"><div class="fb-label">Database URL</div><input class="fb-input" id="fb-url" Value="https://scouting-application-295c8-default-rtdb.firebaseio.com" readonly></div>
-    <div class="fb-field"><div class="fb-label">API Key</div><input class="fb-input" id="fb-apikey" Value="AIzaSyB4f3uybkoPX6Jls8TB" readonly></div>
-    <div class="fb-field"><div class="fb-label">Project ID</div><input class="fb-input" id="fb-projectid" value="scouting-application-295c8" readonly></div>
+    <div class="fb-field"><div class="fb-label">Database URL</div><input class="fb-input" id="fb-url" placeholder="https://your-project-default-rtdb.firebaseio.com"></div>
+    <div class="fb-field"><div class="fb-label">API Key</div><input class="fb-input" id="fb-apikey" placeholder="AIzaSy..."></div>
+    <div class="fb-field"><div class="fb-label">Project ID</div><input class="fb-input" id="fb-projectid" placeholder="your-project-id"></div>
     <div class="modal-row" style="margin-top:12px">
-      <body onload ="saveFBConfig()" </body>
+      <button class="btn-gold" onclick="saveFBConfig()">Save & Connect</button>
       <button class="btn-ghost" onclick="closeFBModal()">Cancel</button>
     </div>
     <div class="fb-note">
@@ -348,13 +346,14 @@ body{background:var(--bg);color:var(--text);font-family:var(--fb);font-size:13px
 <div class="page" id="page-database">
   <div class="sh"><div class="sh-bar" style="background:var(--gold)"></div><div><div class="sh-title" style="color:var(--gold2)">Database</div><div class="sh-sub">// Admin only</div></div></div>
   <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+    <button class="btn-outline" onclick="openFBModal()">⚡ Firebase Config</button>
     <span style="font-family:var(--fm);font-size:10px;color:var(--text3);align-self:center" id="fb-status-text">Not connected</span>
   </div>
   <div class="tba-cfg">
     <div class="tba-cfg-title">The Blue Alliance API — Rebuilt 2026</div>
     <div class="tba-grid">
-      <div><div class="fb-label" style="margin-bottom:3px">Read API Key</div><input class="fb-input" id="tba-key" type="text" placeholder="UJMthFfmu56n4MFGq1gFYhfB1vCgVPI6YbkUE2yrBFtUndjBWzWeXmtEKuqf7ayq" readonly></div>
-      <div><div class="fb-label" style="margin-bottom:3px">Event Key</div><input class="fb-input" id="tba-event" type="text" Value=" 2026mnum" readonly oninput="syncEvDisplay()"></div>
+      <div><div class="fb-label" style="margin-bottom:3px">Read API Key</div><input class="fb-input" id="tba-key" type="text" placeholder="Paste TBA key..."></div>
+      <div><div class="fb-label" style="margin-bottom:3px">Event Key</div><input class="fb-input" id="tba-event" type="text" placeholder="e.g. 2026mnum" oninput="syncEvDisplay()"></div>
     </div>
     <div class="tba-actions">
       <button class="btn-outline" onclick="saveTBACfg()">Save Config</button>
